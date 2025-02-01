@@ -12,21 +12,21 @@ const firebaseConfig = {
     measurementId: "G-V7Q9HY61C5"
 };
 
-
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
 
-
+//filter dropdown
 const registrationTable = document.getElementById("enrollment-table");
 const statusFilter = document.getElementById("status-filter");
 
-
+// Fetch registrations 
 async function fetchEnrollments() {
     const tableBody = document.querySelector("#enrollment-table tbody");
-    tableBody.innerHTML = "";
+    tableBody.innerHTML = ""; // Clear previous data
 
-    const selectedStatus = statusFilter.value;
+    const selectedStatus = statusFilter.value; // Get selected filter value
 
     try {
         const snapshot = await getDocs(collection(db, "enrollment"));
@@ -35,15 +35,19 @@ async function fetchEnrollments() {
             const request = docSnap.data();
             const requestId = docSnap.id;
 
-
+            // Apply filter: Show only enrollments matching selected status
             if (selectedStatus !== "all" && request.status !== selectedStatus) {
                 continue;
             }
 
+            const studentName = await getStudentName(request.studentId);
+            const courseTitle = await getCourseTitle(request.courseId);
+
+
             const row = `
                 <tr>
-                    <td>${request.studentId}</td>
-                    <td>${request.courseId}</td>
+                    <td>${studentName}</td>
+                    <td>${courseTitle}</td>
                     <td>${request.status}</td>
                     <td>
                         <button class="approve-btn" data-id="${requestId}" data-student="${request.studentId}" data-course="${request.courseId}">Approve</button>
@@ -54,7 +58,7 @@ async function fetchEnrollments() {
             tableBody.innerHTML += row;
         }
 
-        attachEventListeners();
+        attachEventListeners(); // Reattach event listeners after filtering
     } catch (error) {
         console.error("Error fetching enrollments:", error);
     }
@@ -64,7 +68,7 @@ async function fetchEnrollments() {
 statusFilter.addEventListener("change", fetchEnrollments);
 
 
-
+// Get student name
 async function getStudentName(studentId) {
     try {
         const studentRef = doc(db, "users", studentId);
@@ -76,6 +80,7 @@ async function getStudentName(studentId) {
     }
 }
 
+// Get course details
 async function getCourseDetails(courseId) {
     try {
         const courseRef = doc(db, "courses", courseId);
@@ -87,7 +92,7 @@ async function getCourseDetails(courseId) {
     }
 }
 
-
+// Approve request
 async function approveRequest(requestId, studentId, courseId) {
     try {
         const requestRef = doc(db, "enrollment", requestId);
@@ -102,7 +107,7 @@ async function approveRequest(requestId, studentId, courseId) {
     }
 }
 
-
+// Reject request
 async function rejectRequest(requestId, studentId, courseId) {
     try {
         //await deleteDoc(doc(db, "enrollment", requestId));
@@ -118,15 +123,27 @@ async function rejectRequest(requestId, studentId, courseId) {
     }
 }
 
-
+// Get course title for notifications
 async function getCourseTitle(courseId) {
     const course = await getCourseDetails(courseId);
     return course.title;
 }
 
+// Send notification
+async function sendNotification(studentId, message) {
+    try {
+        await addDoc(collection(db, "notifications"), {
+            studentId,
+            message,
+            timestamp: serverTimestamp(),
+            seen: false
+        });
+    } catch (error) {
+        console.error("Error sending notification:", error);
+    }
+}
 
-
-
+// Attach event listeners to buttons
 function attachEventListeners() {
     document.querySelectorAll(".approve-btn").forEach(button => {
         button.addEventListener("click", async() => {
@@ -147,4 +164,5 @@ function attachEventListeners() {
     });
 }
 
+// Load enrollments on page load
 window.onload = fetchEnrollments;

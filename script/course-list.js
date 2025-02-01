@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
-import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCBckLKiCtLIFvXX3SLfyCaszC-vFDL3JA",
@@ -12,7 +12,6 @@ const firebaseConfig = {
     measurementId: "G-V7Q9HY61C5"
 };
 
-
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
@@ -20,11 +19,9 @@ const db = getFirestore(app);
 
 async function getCategoryName(categoryId) {
     if (!categoryId) return "Unknown Category";
-
     try {
         const categoryRef = doc(db, "categories", categoryId);
         const categorySnap = await getDoc(categoryRef);
-
         return categorySnap.exists() ? categorySnap.data().name : "Unknown Category";
     } catch (error) {
         console.error("Error fetching category:", error);
@@ -40,28 +37,34 @@ async function fetchCourses() {
 
     courseList.innerHTML = "";
     let categories = new Set();
+    let coursesData = [];
 
     for (const docData of snapshot.docs) {
         const course = docData.data();
+        course.id = docData.id;
+        coursesData.push(course);
         categories.add(course.category);
+    }
 
+    for (const course of coursesData) {
         const categoryName = await getCategoryName(course.category);
-
         let card = `
             <div class="course-card" data-category="${course.category}" data-price="${course.price}" data-duration="${course.duration}">
-                <img src="${course.image}" alt="${course.title}">
+                <img src="${course.image}" alt="${course.title}" width="200" height="200">  
                 <h3>${course.title}</h3>
                 <p>Instructor: ${course.instructor}</p>
                 <p>Category: ${course.category}</p>
                 <p>Price: $${course.price}</p>
                 <p>Duration: ${course.duration} hrs</p>
-                <button class="wishlist-btn" onclick="toggleWishlist('${docData.id}', '${course.title}', '${course.image}', '${course.price}')">
+                <button class="wishlist-btn" onclick="toggleWishlist('${course.id}', '${course.title}', '${course.image}', '${course.price}')">
                     Add to Wishlist
                 </button>
             </div>`;
         courseList.innerHTML += card;
     }
 
+    // Populate category dropdown
+    categoryFilter.innerHTML = '<option value="all">All Categories</option>';
     categories.forEach(category => {
         let option = document.createElement("option");
         option.value = category;
@@ -71,6 +74,7 @@ async function fetchCourses() {
 
     loadWishlistIcons();
 }
+
 
 function getWishlist() {
     return JSON.parse(localStorage.getItem("wishlist")) || [];
@@ -87,13 +91,13 @@ window.toggleWishlist = function(id, title, image, price) {
 
     if (index === -1) {
         wishlist.push({ id, title, image, price });
-    } else {
-        wishlist.splice(index, 1);
     }
 
     saveWishlist(wishlist);
+    updateWishlistCount();
     loadWishlistIcons();
 };
+
 
 
 function loadWishlistIcons() {
@@ -107,6 +111,7 @@ function loadWishlistIcons() {
 
 window.viewWishlist = function() {
     let wishlistItems = document.getElementById("wishlist-items");
+    let wishlistModal = document.getElementById("wishlist-modal");
     let wishlist = getWishlist();
 
     if (wishlist.length === 0) {
@@ -117,20 +122,29 @@ window.viewWishlist = function() {
                 <img src="${item.image}" width="100">
                 <p>${item.title} - $${item.price}</p>
                 <button onclick="removeFromWishlist('${item.id}')">Remove</button>
+                 <button onclick="enrollToCourse('${item.id}')">Enroll</button>
             </div>
         `).join("");
     }
 
-    document.getElementById("wishlist-modal").style.display = "flex";
+    wishlistModal.style.display = "block";
 };
 
+
+window.enrollToCourse = function(courseId) {
+    console.log("Enrolling in course with ID:", courseId);
+    removeFromWishlist(courseId);
+
+};
 
 window.removeFromWishlist = function(id) {
     let wishlist = getWishlist().filter(item => item.id !== id);
     saveWishlist(wishlist);
     viewWishlist();
+    updateWishlistCount();
     loadWishlistIcons();
 };
+
 
 
 window.closeWishlist = function() {
@@ -138,24 +152,14 @@ window.closeWishlist = function() {
 };
 
 
-window.applyFilters = function() {
-    let searchQuery = document.getElementById("search-bar").value.toLowerCase();
-    let category = document.getElementById("category-filter").value;
-    let sortBy = document.getElementById("sort-filter").value;
-    let courses = document.querySelectorAll(".course-card");
+function updateWishlistCount() {
+    let wishlist = getWishlist();
+    document.getElementById("wishlist-count").textContent = `(${wishlist.length})`;
+}
 
-    courses.forEach(course => {
-        let title = course.querySelector("h3").textContent.toLowerCase();
-        let courseCategory = course.dataset.category;
-        let price = parseFloat(course.dataset.price);
-        let duration = parseFloat(course.dataset.duration);
 
-        let show = (title.includes(searchQuery) || searchQuery === "") && (category === "all" || courseCategory === category);
-        course.style.display = show ? "block" : "none";
-    });
 
-    loadWishlistIcons();
-};
+
 
 
 window.onload = fetchCourses;
