@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/e-learning.jpeg" type="image/x-icon" />
+    <link rel="stylesheet" href="style/course.css">
+    <title>Insert Course</title>
+</head>
+
+<body>
+    <div id="admin-dashboard">
+        <!-- Course Form -->
+        <form id="course-form">
+            <h2>Insert New Course</h2>
+            <label for="course-title">Title:</label>
+            <input type="text" id="course-title" required />
+
+            <label for="course-image">Image URL:</label>
+            <input type="url" id="course-image" required />
+
+            <label for="course-category">Category:</label>
+            <select id="course-category" required></select>
+
+            <label for="course-instructor">Instructor Name:</label>
+            <input type="text" id="course-instructor" required />
+
+            <label for="course-description">Description:</label>
+            <textarea id="course-description" required></textarea>
+
+            <label for="course-price">Price:</label>
+            <input type="number" id="course-price" required />
+
+            <label for="course-duration">Duration (in hours):</label>
+            <input type="number" id="course-duration" required />
+
+            <label for="course-video">Video URL:</label>
+            <input type="url" id="course-video" required />
+
+            <button type="submit">Save Course</button>
+        </form>
+    </div>
+
+</body>
+<script type="module" src="script/insertcourse.js"></script>
+
+</html>
