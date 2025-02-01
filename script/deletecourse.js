@@ -21,14 +21,13 @@ const firebaseConfig = {
     measurementId: "G-V7Q9HY61C5"
 };
 
-// Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
 
 
 
-// Function to get category name from Firestore using category ID
 async function getCategoryName(categoryId) {
     if (!categoryId) {
         console.error("No category ID provided!");
@@ -65,7 +64,7 @@ async function getCategoryName(categoryId) {
 const statusFilter = document.getElementById("status-filter");
 const searchInput = document.getElementById("search-input");
 
-// Function to fetch and display courses with category names
+
 async function fetchCourses() {
     const tableBody = document.querySelector("#course-table tbody");
     tableBody.innerHTML = "";
@@ -106,7 +105,7 @@ async function fetchCourses() {
 
 
 
-// Function to Delete a Course
+
 function attachDeleteListeners() {
     document.querySelectorAll(".delete-btn").forEach(button => {
         button.addEventListener("click", async() => {
@@ -124,7 +123,7 @@ function attachDeleteListeners() {
     });
 }
 
-// Function to Edit a Course
+
 function attachEditListeners() {
     document.querySelectorAll(".edit-btn").forEach(button => {
         button.addEventListener("click", async() => {
@@ -132,7 +131,7 @@ function attachEditListeners() {
             document.getElementById("update-form").style.display = "block";
             document.getElementById("course-id").value = courseId;
 
-            // Fetch Course Data
+
             const courseRef = doc(db, "courses", courseId);
             const courseSnap = await getDoc(courseRef);
             if (courseSnap.exists()) {
@@ -152,7 +151,7 @@ function attachEditListeners() {
 const courseForm = document.getElementById("course-form");
 const categoryDropdown = document.getElementById("course-category");
 
-// Categories
+
 async function loadCategories() {
     try {
 
@@ -171,16 +170,14 @@ async function loadCategories() {
     }
 }
 
-//search bar
-
-
 
 
 // Load categories when the page loads
 //window.addEventListener("DOMContentLoaded", loadCategories);
 
 loadCategories();
-// Save Updated Course
+
+
 document.getElementById("save-update").addEventListener("click", async() => {
     const courseId = document.getElementById("course-id").value;
     if (!courseId) return;

@@ -12,21 +12,21 @@ const firebaseConfig = {
     measurementId: "G-V7Q9HY61C5"
 };
 
-// Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
 
-//filter dropdown
+
 const registrationTable = document.getElementById("enrollment-table");
 const statusFilter = document.getElementById("status-filter");
 
-// Fetch registrations 
+
 async function fetchEnrollments() {
     const tableBody = document.querySelector("#enrollment-table tbody");
-    tableBody.innerHTML = ""; // Clear previous data
+    tableBody.innerHTML = "";
 
-    const selectedStatus = statusFilter.value; // Get selected filter value
+    const selectedStatus = statusFilter.value;
 
     try {
         const snapshot = await getDocs(collection(db, "enrollment"));
@@ -35,7 +35,7 @@ async function fetchEnrollments() {
             const request = docSnap.data();
             const requestId = docSnap.id;
 
-            // Apply filter: Show only enrollments matching selected status
+
             if (selectedStatus !== "all" && request.status !== selectedStatus) {
                 continue;
             }
@@ -54,7 +54,7 @@ async function fetchEnrollments() {
             tableBody.innerHTML += row;
         }
 
-        attachEventListeners(); // Reattach event listeners after filtering
+        attachEventListeners();
     } catch (error) {
         console.error("Error fetching enrollments:", error);
     }
@@ -64,7 +64,7 @@ async function fetchEnrollments() {
 statusFilter.addEventListener("change", fetchEnrollments);
 
 
-// Get student name
+
 async function getStudentName(studentId) {
     try {
         const studentRef = doc(db, "users", studentId);
@@ -76,7 +76,6 @@ async function getStudentName(studentId) {
     }
 }
 
-// Get course details
 async function getCourseDetails(courseId) {
     try {
         const courseRef = doc(db, "courses", courseId);
@@ -88,7 +87,7 @@ async function getCourseDetails(courseId) {
     }
 }
 
-// Approve request
+
 async function approveRequest(requestId, studentId, courseId) {
     try {
         const requestRef = doc(db, "enrollment", requestId);
@@ -103,7 +102,7 @@ async function approveRequest(requestId, studentId, courseId) {
     }
 }
 
-// Reject request
+
 async function rejectRequest(requestId, studentId, courseId) {
     try {
         //await deleteDoc(doc(db, "enrollment", requestId));
@@ -119,27 +118,15 @@ async function rejectRequest(requestId, studentId, courseId) {
     }
 }
 
-// Get course title for notifications
+
 async function getCourseTitle(courseId) {
     const course = await getCourseDetails(courseId);
     return course.title;
 }
 
-// Send notification
-async function sendNotification(studentId, message) {
-    try {
-        await addDoc(collection(db, "notifications"), {
-            studentId,
-            message,
-            timestamp: serverTimestamp(),
-            seen: false
-        });
-    } catch (error) {
-        console.error("Error sending notification:", error);
-    }
-}
 
-// Attach event listeners to buttons
+
+
 function attachEventListeners() {
     document.querySelectorAll(".approve-btn").forEach(button => {
         button.addEventListener("click", async() => {
@@ -160,5 +147,4 @@ function attachEventListeners() {
     });
 }
 
-// Load enrollments on page load
 window.onload = fetchEnrollments;

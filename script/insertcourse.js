@@ -11,15 +11,15 @@ const firebaseConfig = {
     measurementId: "G-V7Q9HY61C5"
 };
 
-// Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Select elements
+
 const courseForm = document.getElementById("course-form");
 const categoryDropdown = document.getElementById("course-category");
 
-// Categories
+
 async function loadCategories() {
     try {
         const querySnapshot = await getDocs(collection(db, "categories"));
@@ -37,12 +37,12 @@ async function loadCategories() {
     }
 }
 
-// Load categories when the page loads
+
 //window.addEventListener("DOMContentLoaded", loadCategories);
 
 loadCategories();
 
-// Handle Course Submission
+
 courseForm.addEventListener("submit", async(event) => {
     event.preventDefault();
 
@@ -55,14 +55,14 @@ courseForm.addEventListener("submit", async(event) => {
     const description = document.getElementById("course-description").value.trim();
     const videoUrl = document.getElementById("course-video").value.trim();
 
-    // Validation Check
+
     if (!title || !instructor || !price || !image || !category || !duration || !description || !videoUrl) {
         alert("Please fill all fields correctly.");
         return;
     }
 
     try {
-        // Add course to Firestore
+
         const docRef = await addDoc(collection(db, "courses"), {
             title,
             instructor,
@@ -77,7 +77,7 @@ courseForm.addEventListener("submit", async(event) => {
         //console.log("Course added with ID:", docRef.id);
         alert("Course added successfully!");
 
-        // Reset Form Fields
+
         courseForm.reset();
     } catch (error) {
         console.error("Error adding course:", error.message);

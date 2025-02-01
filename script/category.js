@@ -12,18 +12,17 @@ const firebaseConfig = {
     measurementId: "G-V7Q9HY61C5"
 };
 
-// Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
 
 
-// Get elements
+
 const categoryForm = document.getElementById("category-form");
 const categoryNameInput = document.getElementById("category-name");
 const categoryList = document.getElementById("category-list");
 
-// Fetch Categories from Firestore
 async function fetchCategories() {
     categoryList.innerHTML = "";
     try {
@@ -42,14 +41,14 @@ async function fetchCategories() {
             td1.innerHTML = index++;
             td2.innerHTML = category.name;
 
-            // Delete Button
+
             let deleteButton = document.createElement("button");
             deleteButton.textContent = "Delete";
             deleteButton.classList.add("delete-btn");
             deleteButton.setAttribute("data-id", doc.id);
             deleteButton.onclick = () => deleteCategory(doc.id);
 
-            //update Button
+
             let updateButton = document.createElement("button");
             updateButton.textContent = "Update";
             updateButton.classList.add("update-btn");
@@ -69,7 +68,7 @@ async function fetchCategories() {
     }
 }
 
-// // Add Category to Firestore
+
 categoryForm.addEventListener("submit", async(e) => {
     e.preventDefault();
 
@@ -100,7 +99,7 @@ categoryForm.addEventListener("submit", async(e) => {
 });
 
 
-// Delete Category from Firestore
+
 async function deleteCategory(categoryId) {
     try {
         const isConfirmed = confirm("Are you sure you want to delete this Category?");

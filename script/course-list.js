@@ -12,12 +12,12 @@ const firebaseConfig = {
     measurementId: "G-V7Q9HY61C5"
 };
 
-// Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
 
-// Get category name from Firestore
+
 async function getCategoryName(categoryId) {
     if (!categoryId) return "Unknown Category";
 
@@ -32,7 +32,7 @@ async function getCategoryName(categoryId) {
     }
 }
 
-// Fetch courses and display them
+
 async function fetchCourses() {
     const snapshot = await getDocs(collection(db, "courses"));
     const courseList = document.getElementById("course-list");
@@ -62,7 +62,6 @@ async function fetchCourses() {
         courseList.innerHTML += card;
     }
 
-    // Populate category filter dropdown
     categories.forEach(category => {
         let option = document.createElement("option");
         option.value = category;
@@ -73,17 +72,15 @@ async function fetchCourses() {
     loadWishlistIcons();
 }
 
-// Load Wishlist from Local Storage
 function getWishlist() {
     return JSON.parse(localStorage.getItem("wishlist")) || [];
 }
 
-// Save Wishlist to Local Storage
 function saveWishlist(wishlist) {
     localStorage.setItem("wishlist", JSON.stringify(wishlist));
 }
 
-// Wishlist (Add/Remove)
+
 window.toggleWishlist = function(id, title, image, price) {
     let wishlist = getWishlist();
     let index = wishlist.findIndex(item => item.id === id);
@@ -98,7 +95,7 @@ window.toggleWishlist = function(id, title, image, price) {
     loadWishlistIcons();
 };
 
-// Load Wishlist Icons
+
 function loadWishlistIcons() {
     let wishlist = getWishlist();
     document.querySelectorAll(".wishlist-btn").forEach(button => {
@@ -107,7 +104,7 @@ function loadWishlistIcons() {
     });
 }
 
-// View Wishlist
+
 window.viewWishlist = function() {
     let wishlistItems = document.getElementById("wishlist-items");
     let wishlist = getWishlist();
@@ -127,7 +124,7 @@ window.viewWishlist = function() {
     document.getElementById("wishlist-modal").style.display = "flex";
 };
 
-// Remove from Wishlist
+
 window.removeFromWishlist = function(id) {
     let wishlist = getWishlist().filter(item => item.id !== id);
     saveWishlist(wishlist);
@@ -135,12 +132,12 @@ window.removeFromWishlist = function(id) {
     loadWishlistIcons();
 };
 
-// Close Wishlist Modal
+
 window.closeWishlist = function() {
     document.getElementById("wishlist-modal").style.display = "none";
 };
 
-// Apply Filters
+
 window.applyFilters = function() {
     let searchQuery = document.getElementById("search-bar").value.toLowerCase();
     let category = document.getElementById("category-filter").value;
@@ -160,5 +157,5 @@ window.applyFilters = function() {
     loadWishlistIcons();
 };
 
-// Load courses on page load
+
 window.onload = fetchCourses;
