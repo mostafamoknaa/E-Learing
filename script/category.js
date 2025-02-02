@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
-import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, getDoc, doc, deleteDoc, writeBatch, updateDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCBckLKiCtLIFvXX3SLfyCaszC-vFDL3JA",
@@ -73,9 +73,9 @@ categoryForm.addEventListener("submit", async(e) => {
     e.preventDefault();
 
     const name = categoryNameInput.value.trim();
-    const regex = /^[A-Za-z]+$/;
+    const regex = /^[A-Za-z][a-zA-Z]*$/;
     if (!name || name.length < 3 || !regex.test(name)) {
-        alert("Please Enter a valid Category Name");
+        alert("Your Category Name must be at least 3 characters long and contain only alphabets and spaces.");
         return;
     }
 
@@ -105,6 +105,16 @@ async function deleteCategory(categoryId) {
         const isConfirmed = confirm("Are you sure you want to delete this Category?");
 
         if (isConfirmed) {
+            // loop for all courses in the category and delete them
+            const coursesSnapshot = await getDocs(collection(db, "courses"));
+            const name = await getCategoryName(categoryId);
+            coursesSnapshot.forEach(async(courseDoc) => {
+                const courseData = courseDoc.data();
+                if (courseData.category === name) {
+                    await deleteDoc(doc(db, "courses", courseDoc.id));
+                }
+            });
+
             await deleteDoc(doc(db, "categories", categoryId));
             fetchCategories();
         } else {
@@ -115,32 +125,73 @@ async function deleteCategory(categoryId) {
     }
 }
 
+
 async function updateCategory(categoryId) {
-    const newName = prompt("Enter the new name for the category:");
-    const regex = /^[A-Za-z]+$/;
-    if (!newName || newName.length < 3 || !regex.test(newName)) {
-        alert("Please Enter a valid Category Name");
+    const newName = prompt("Enter the new name for the category:").trim();
+
+    // 🔹 Validation: At least 3 characters, only letters & spaces
+    const regex = /^[A-Za-z][A-Za-z\s]{2,}$/;
+    if (!newName || !regex.test(newName)) {
+        alert("Category name must be at least 3 characters long and contain only letters and spaces.");
         return;
     }
-    if (newName) {
-        try {
-            const categoryRef = doc(db, "categories", categoryId);
-            const snapshot = await getDocs(collection(db, "categories"));
-            const categoryExists = snapshot.docs.some(doc => doc.data().name.toLowerCase() === newName.toLowerCase());
 
-            if (categoryExists) {
-                alert("Category already exists");
-                return;
-            } else {
-                await updateDoc(categoryRef, { name: newName });
-                fetchCategories();
-                alert("Category updated Successfully");
-            }
+    try {
+        const categoryRef = doc(db, "categories", categoryId);
 
-        } catch (error) {
-            console.error("Error updating category:", error);
+        // 🔹 Check if category name already exists (excluding the current one)
+        const categoriesSnapshot = await getDocs(collection(db, "categories"));
+        const categoryExists = categoriesSnapshot.docs.some(docSnap =>
+            docSnap.id !== categoryId && docSnap.data().name.toLowerCase() === newName.toLowerCase()
+        );
+
+        if (categoryExists) {
+            alert("Category already exists!");
+            return;
         }
+
+        const name = await getCategoryName(categoryId);
+        await updateDoc(categoryRef, { name: newName });
+
+        const coursesSnapshot = await getDocs(collection(db, "courses"));
+        const snapshot = await getDocs(collection(db, "courses"));
+
+
+        snapshot.forEach(async(doc) => {
+            const courseData = doc.data();
+            if (courseData.category === name) {
+                await updateDoc(doc.ref, { category: newName });
+            }
+        });
+
+
+        fetchCategories();
+
+    } catch (error) {
+        console.error("Error updating category:", error);
+        alert("An error occurred while updating the category. Please try again.");
     }
 }
+
+async function getCategoryName(categoryId) {
+    if (!categoryId) return "Unknown Category";
+
+    try {
+        const categoryRef = doc(db, "categories", categoryId);
+        const categorySnap = await getDoc(categoryRef);
+
+        if (categorySnap.exists()) {
+            return categorySnap.data().name;
+        } else {
+            console.warn(`Category ID ${categoryId} not found.`);
+            return "Unknown Category";
+        }
+    } catch (error) {
+        console.error("Error fetching category name:", error);
+        return "Unknown Category";
+    }
+}
+
+
 
 fetchCategories();

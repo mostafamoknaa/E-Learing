@@ -28,38 +28,7 @@ const db = getFirestore(app);
 
 
 
-async function getCategoryName(categoryId) {
-    if (!categoryId) {
-        console.error("No category ID provided!");
-        return "Unknown Category";
-    }
 
-    try {
-        console.log(`Fetching category for ID: ${categoryId}`);
-
-
-        const categoryRef = doc(db, "categories", categoryId);
-        const categorySnap = await getDoc(categoryRef);
-
-
-        if (categorySnap.exists()) {
-            const categoryName = categorySnap.data().name;
-            console.log(`Category name fetched: ${categoryName}`);
-            return categoryName;
-        } else {
-            console.warn(`Category not found for ID: ${categoryId}`);
-            return "Unknown Category";
-        }
-    } catch (error) {
-
-        if (error instanceof Error) {
-            console.error("Error fetching category:", error.message);
-        } else {
-            console.error("Error fetching category:", JSON.stringify(error));
-        }
-        return "Unknown Category";
-    }
-}
 
 const statusFilter = document.getElementById("status-filter");
 const searchInput = document.getElementById("search-input");
@@ -75,9 +44,6 @@ async function fetchCourses() {
 
         for (const [index, docData] of snapshot.docs.entries()) {
             const course = docData.data();
-
-
-            const categoryName = await getCategoryName(course.category);
 
             const row = `
                 <tr>
