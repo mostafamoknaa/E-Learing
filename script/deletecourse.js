@@ -40,7 +40,6 @@ async function fetchCourses() {
 
     try {
         const snapshot = await getDocs(collection(db, "courses"));
-        const selectedStatus = statusFilter.value;
 
         for (const [index, docData] of snapshot.docs.entries()) {
             const course = docData.data();

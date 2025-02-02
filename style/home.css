@@ -42,40 +42,6 @@ nav ul li a {
 }
 
 
-/* Slideshow */
-
-.slider {
-    width: 100%;
-    overflow: hidden;
-    position: relative;
-}
-
-.slides {
-    display: flex;
-    width: 300%;
-    animation: slide 10s infinite;
-    white-space: nowrap;
-}
-
-.slides img {
-    width: 100%;
-    display: block;
-}
-
-@keyframes slide {
-    0%,
-    100% {
-        transform: translateX(0%);
-    }
-    33% {
-        transform: translateX(-100%);
-    }
-    66% {
-        transform: translateX(-200%);
-    }
-}
-
-
 /* Hero Section */
 
 .hero {

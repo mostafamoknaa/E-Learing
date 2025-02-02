@@ -60,6 +60,35 @@ courseForm.addEventListener("submit", async(event) => {
         alert("Please fill all fields correctly.");
         return;
     }
+    if (!CheckName(title)) {
+        alert("Please enter only characters for the title.");
+        return;
+    }
+    if (!CheckName(instructor)) {
+        alert("Please enter only characters for the instructor.");
+        return;
+    }
+    if (!checkNumber(price)) {
+        alert("Please enter only positive numbers for the price.");
+        return;
+    }
+    if (!checkNumber(duration)) {
+        alert("Please enter only positive numbers for the duration.");
+        return;
+    }
+
+    if (!CheckName(description)) {
+        alert("Please enter a only characters for the description.");
+        return;
+    }
+    if (!checkurl(videoUrl)) {
+        alert("Please enter a valid video URL.");
+        return;
+    }
+    if (!checkurl(image)) {
+        alert("Please enter a valid image URL.");
+        return;
+    }
 
     try {
 
@@ -84,3 +113,27 @@ courseForm.addEventListener("submit", async(event) => {
         alert("Failed to add course. Check console for details.");
     }
 });
+
+function CheckName(name) {
+    const regx = /^[a-zA-Z\s]+[^\s]$/;
+    if (name.length < 3 || !regx.test(name)) {
+        return false;
+    }
+    return true;
+}
+
+function checkNumber(number) {
+    const regx = /^[0-9]+$/;
+    if (number.length < 0 || !regx.test(number)) {
+        return false;
+    }
+    return true;
+}
+
+function checkurl(url) {
+    const regx = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+    if (url.length < 0 || !regx.test(url)) {
+        return false;
+    }
+    return true;
+}
