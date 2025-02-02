@@ -73,7 +73,7 @@ categoryForm.addEventListener("submit", async(e) => {
     e.preventDefault();
 
     const name = categoryNameInput.value.trim();
-    const regex = /^[A-Za-z][a-zA-Z]*$/;
+    const regex = /^[a-zA-Z\s]+[^\s]$/;
     if (!name || name.length < 3 || !regex.test(name)) {
         alert("Your Category Name must be at least 3 characters long and contain only alphabets and spaces.");
         return;
@@ -130,7 +130,7 @@ async function updateCategory(categoryId) {
     const newName = prompt("Enter the new name for the category:").trim();
 
     // 🔹 Validation: At least 3 characters, only letters & spaces
-    const regex = /^[A-Za-z][A-Za-z\s]{2,}$/;
+    const regex = /^[a-zA-Z\s]+[^\s]$/;
     if (!newName || !regex.test(newName)) {
         alert("Category name must be at least 3 characters long and contain only letters and spaces.");
         return;
