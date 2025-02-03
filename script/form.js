@@ -21,12 +21,6 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 
-
-
-
-
-
-
 window.onload = function() {
 
     document.getElementById('Username_sign_up').value = "";
@@ -195,7 +189,6 @@ document.getElementById('form_in').addEventListener('submit', async function(eve
 onAuthStateChanged(auth, (user) => {
 
     if (user) {
-
         const userId = user.uid;
         console.log(userId);
 

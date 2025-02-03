@@ -37,8 +37,10 @@ async function loadCourses() {
                                     <p><strong>Instructor:</strong> ${course.instructor}</p>
                                     <p><strong>Price:</strong> $${course.price}</p>
                                     <div class="btn-group">
-                                        <a href="course_details.html?id=${doc.id}" class="btn btn-primary">View Course</a>
-                                        <button class="btn btn-outline-warning" onclick="addToWishlist('${doc.id}')">Add to Wishlist</button>
+                                        <a href="course_details.html?id=${doc.id}" class="wishlist-btn">Enroll</a>
+                                        <button class="wishlist-btn" onclick="toggleWishlist('${doc.id}', '${course.title}', '${course.image}', '${course.price}')">
+                                            Add to Wishlist
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -52,15 +54,84 @@ async function loadCourses() {
     }
 }
 
-window.addToWishlist = function(courseId) {
-    let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-    if (!wishlist.includes(courseId)) {
-        wishlist.push(courseId);
-        localStorage.setItem("wishlist", JSON.stringify(wishlist));
-        alert("Added to wishlist!");
-    } else {
-        alert("Course is already in your wishlist.");
+function getWishlist() {
+    return JSON.parse(localStorage.getItem("wishlist")) || [];
+}
+
+function saveWishlist(wishlist) {
+    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+}
+
+
+window.toggleWishlist = function(id, title, image, price) {
+    let wishlist = getWishlist();
+    let index = wishlist.findIndex(item => item.id === id);
+
+    if (index === -1) {
+        wishlist.push({ id, title, image, price });
     }
+
+    saveWishlist(wishlist);
+    updateWishlistCount();
+    loadWishlistIcons();
 };
 
+
+
+function loadWishlistIcons() {
+    let wishlist = getWishlist();
+    document.querySelectorAll(".wishlist-btn").forEach(button => {
+        let courseId = button.getAttribute("onclick").match(/'([^']+)'/)[1];
+        button.textContent = wishlist.some(item => item.id === courseId) ? "Remove from Wishlist" : "Add to Wishlist";
+    });
+}
+
+
+window.viewWishlist = function() {
+    let wishlistItems = document.getElementById("wishlist-items");
+    let wishlistModal = document.getElementById("wishlist-modal");
+    let wishlist = getWishlist();
+
+    if (wishlist.length === 0) {
+        wishlistItems.innerHTML = "<p>No items in wishlist.</p>";
+    } else {
+        wishlistItems.innerHTML = wishlist.map(item => `
+            <div class="wishlist-item">
+                <img src="${item.image}" width="100">
+                <p>${item.title} - $${item.price}</p>
+                <button onclick="removeFromWishlist('${item.id}')">Remove</button>
+                 <button onclick="enrollToCourse('${item.id}')">Enroll</button>
+            </div>
+        `).join("");
+    }
+
+    wishlistModal.style.display = "block";
+};
+
+
+window.enrollToCourse = function(courseId) {
+    console.log("Enrolling in course with ID:", courseId);
+    removeFromWishlist(courseId);
+
+};
+
+window.removeFromWishlist = function(id) {
+    let wishlist = getWishlist().filter(item => item.id !== id);
+    saveWishlist(wishlist);
+    viewWishlist();
+    updateWishlistCount();
+    loadWishlistIcons();
+};
+
+
+
+window.closeWishlist = function() {
+    document.getElementById("wishlist-modal").style.display = "none";
+};
+
+
+function updateWishlistCount() {
+    let wishlist = getWishlist();
+    document.getElementById("wishlist-count").textContent = `(${wishlist.length})`;
+}
 document.addEventListener("DOMContentLoaded", loadCourses);
