@@ -2,9 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebas
 import {
     getFirestore,
     collection,
-    getDocs,
-    deleteDoc,
-    doc
+    getDocs
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -19,41 +17,75 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
 const studentTableBody = document.getElementById("studentTableBody");
 
+// Function to get all course names
+async function getCourseNames() {
+    const courseNames = {};
+    try {
+        const querySnapshot = await getDocs(collection(db, "courses"));
+        querySnapshot.forEach((doc) => {
+            const course = doc.data();
+            courseNames[doc.id] = course.title || "Unknown Course"; // Store Course ID as key and Title as value
+        });
+    } catch (error) {
+        console.error("Error fetching course names:", error);
+    }
+    return courseNames;
+}
 
+// Function to get all student names
+async function getStudentNames() {
+    const studentNames = {};
+    try {
+        const querySnapshot = await getDocs(collection(db, "student"));
+        querySnapshot.forEach((doc) => {
+            const student = doc.data();
+            studentNames[student.userId] = student.name || "Unknown Student"; // Store Student ID as key and Name as value
+        });
+    } catch (error) {
+        console.error("Error fetching student names:", error);
+    }
+    return studentNames;
+}
+
+// Function to load students and their courses
 async function loadStudents() {
     try {
-        const querySnapshot = await getDocs(collection(db, "Completecourse"));
+        const courseNames = await getCourseNames(); // Fetch all course names
+        const studentNames = await getStudentNames(); // Fetch all student names
+        const querySnapshot = await getDocs(collection(db, "coursecompleted"));
 
         studentTableBody.innerHTML = "";
         let index = 1;
+        const studentCourses = {}; // Store student-wise course data
 
-        const studentCourses = {};
-
+        // Organize data by student
         querySnapshot.forEach((doc) => {
-            const student = doc.data();
-            const studentId = student.Studentid;
-            const courseId = student.Courseid;
-            const isFinished = student.Finshed;
+            const record = doc.data();
+            const studentId = record.userId;
+            const courseId = record.courseId;
+            const isFinished = record.iscompleted;
 
             if (!studentCourses[studentId]) {
                 studentCourses[studentId] = {
+                    name: studentNames[studentId] || "Unknown Student",
                     completedCourses: [],
                     uncompletedCourses: []
                 };
             }
 
+            const courseName = courseNames[courseId] || "Unknown Course";
             if (isFinished) {
-                studentCourses[studentId].completedCourses.push(courseId);
+                studentCourses[studentId].completedCourses.push(courseName);
             } else {
-                studentCourses[studentId].uncompletedCourses.push(courseId);
+                studentCourses[studentId].uncompletedCourses.push(courseName);
             }
         });
 
+        // Render student-course data in table
         for (const studentId in studentCourses) {
-            const { completedCourses, uncompletedCourses } = studentCourses[studentId];
+            const { name, completedCourses, uncompletedCourses } = studentCourses[studentId];
 
             const rowSpanCount = Math.max(completedCourses.length, uncompletedCourses.length, 1);
 
@@ -63,7 +95,7 @@ async function loadStudents() {
                 if (i === 0) {
                     row.innerHTML = `
                         <td rowspan="${rowSpanCount}">${index++}</td>
-                        <td rowspan="${rowSpanCount}">${studentId}</td>
+                        <td rowspan="${rowSpanCount}">${name}</td>
                         <td>${completedCourses[i] || "No Completed Courses"}</td>
                         <td>${uncompletedCourses[i] || "No Uncompleted Courses"}</td>
                     `;
@@ -77,12 +109,10 @@ async function loadStudents() {
                 studentTableBody.appendChild(row);
             }
         }
-
-
     } catch (error) {
         console.error("Error fetching students:", error);
     }
 }
 
-
+// Load students on page load
 window.addEventListener("DOMContentLoaded", loadStudents);

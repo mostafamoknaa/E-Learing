@@ -60,33 +60,25 @@ courseForm.addEventListener("submit", async(event) => {
         alert("Please fill all fields correctly.");
         return;
     }
-    if (!CheckName(title)) {
-        alert("Please enter only characters for the title.");
-        return;
-    }
     if (!CheckName(instructor)) {
-        alert("Please enter only characters for the instructor.");
+        alert("Please Enter only Characters for the instructor Name.");
         return;
     }
     if (!checkNumber(price)) {
-        alert("Please enter only positive numbers for the price.");
+        alert("Please Enter only Positive Numbers for the Price.");
         return;
     }
     if (!checkNumber(duration)) {
-        alert("Please enter only positive numbers for the duration.");
+        alert("Please Enter only Positive Numbers for the Duration Time.");
         return;
     }
 
-    if (!CheckName(description)) {
-        alert("Please enter a only characters for the description.");
+    if (!checkUrl(videoUrl)) {
+        alert("Please Enter a Valid URL for the Video URL.");
         return;
     }
-    if (!checkurl(videoUrl)) {
-        alert("Please enter a valid video URL.");
-        return;
-    }
-    if (!checkurl(image)) {
-        alert("Please enter a valid image URL.");
+    if (!checkUrl(image)) {
+        alert("Please Enter a Valid URL for the Image URL.");
         return;
     }
 
@@ -124,15 +116,15 @@ function CheckName(name) {
 
 function checkNumber(number) {
     const regx = /^[0-9]+$/;
-    if (number.length < 0 || !regx.test(number)) {
+    if (number.length < 0 || !regx.test(number) || isNaN(number)) {
         return false;
     }
     return true;
 }
 
-function checkurl(url) {
-    const regx = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
-    if (url.length < 0 || !regx.test(url)) {
+function checkUrl(url) {
+    const regx = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
+    if (!regx.test(url)) {
         return false;
     }
     return true;
