@@ -6,7 +6,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyCBckLKiCtLIFvXX3SLfyCaszC-vFDL3JA",
     authDomain: "ecommerce-9d94f.firebaseapp.com",
     projectId: "ecommerce-9d94f",
-    storageBucket: "ecommerce-9d94f.firebasestorage.app",
+    storageBucket: "ecommerce-9d94f.appspot.com",
     messagingSenderId: "444404014366",
     appId: "1:444404014366:web:d1e5a5f10e5b90ca95fd0f",
     measurementId: "G-V7Q9HY61C5"
@@ -15,7 +15,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
-
 
 async function getCategoryName(categoryId) {
     if (!categoryId) return "Unknown Category";
@@ -28,7 +27,6 @@ async function getCategoryName(categoryId) {
         return "Unknown Category";
     }
 }
-
 
 async function fetchCourses() {
     const snapshot = await getDocs(collection(db, "courses"));
@@ -53,17 +51,16 @@ async function fetchCourses() {
                 <img src="${course.image}" alt="${course.title}" width="200" height="200">  
                 <h3>${course.title}</h3>
                 <p>Instructor: ${course.instructor}</p>
-                <p>Category: ${course.category}</p>
+                <p>Category: ${categoryName}</p>
                 <p>Price: $${course.price}</p>
                 <p>Duration: ${course.duration} hrs</p>
-                <button class="wishlist-btn" onclick="toggleWishlist('${course.id}', '${course.title}', '${course.image}', '${course.price}')">
+                <button class="wishlist-btn" data-id="${course.id}" onclick="toggleWishlist('${course.id}', '${course.title}', '${course.image}', '${course.price}')">
                     Add to Wishlist
                 </button>
             </div>`;
         courseList.innerHTML += card;
     }
 
-    // Populate category dropdown
     categoryFilter.innerHTML = '<option value="all">All Categories</option>';
     categories.forEach(category => {
         let option = document.createElement("option");
@@ -75,7 +72,6 @@ async function fetchCourses() {
     loadWishlistIcons();
 }
 
-
 function getWishlist() {
     return JSON.parse(localStorage.getItem("wishlist")) || [];
 }
@@ -84,13 +80,14 @@ function saveWishlist(wishlist) {
     localStorage.setItem("wishlist", JSON.stringify(wishlist));
 }
 
-
 window.toggleWishlist = function(id, title, image, price) {
     let wishlist = getWishlist();
     let index = wishlist.findIndex(item => item.id === id);
 
     if (index === -1) {
         wishlist.push({ id, title, image, price });
+    } else {
+        wishlist.splice(index, 1); // Remove if already exists
     }
 
     saveWishlist(wishlist);
@@ -98,16 +95,13 @@ window.toggleWishlist = function(id, title, image, price) {
     loadWishlistIcons();
 };
 
-
-
 function loadWishlistIcons() {
     let wishlist = getWishlist();
     document.querySelectorAll(".wishlist-btn").forEach(button => {
-        let courseId = button.getAttribute("onclick").match(/'([^']+)'/)[1];
+        let courseId = button.dataset.id;
         button.textContent = wishlist.some(item => item.id === courseId) ? "Remove from Wishlist" : "Add to Wishlist";
     });
 }
-
 
 window.viewWishlist = function() {
     let wishlistItems = document.getElementById("wishlist-items");
@@ -122,19 +116,18 @@ window.viewWishlist = function() {
                 <img src="${item.image}" width="100">
                 <p>${item.title} - $${item.price}</p>
                 <button onclick="removeFromWishlist('${item.id}')">Remove</button>
-                 <button onclick="enrollToCourse('${item.id}')">Enroll</button>
+                <button onclick="enrollToCourse('${item.id}')">Enroll</button>
             </div>
         `).join("");
     }
 
     wishlistModal.style.display = "block";
+    updateWishlistCount();
 };
-
 
 window.enrollToCourse = function(courseId) {
     console.log("Enrolling in course with ID:", courseId);
     removeFromWishlist(courseId);
-
 };
 
 window.removeFromWishlist = function(id) {
@@ -145,21 +138,13 @@ window.removeFromWishlist = function(id) {
     loadWishlistIcons();
 };
 
-
-
 window.closeWishlist = function() {
     document.getElementById("wishlist-modal").style.display = "none";
 };
-
 
 function updateWishlistCount() {
     let wishlist = getWishlist();
     document.getElementById("wishlist-count").textContent = `(${wishlist.length})`;
 }
-
-
-
-
-
 
 window.onload = fetchCourses;

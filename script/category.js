@@ -105,7 +105,8 @@ async function deleteCategory(categoryId) {
         const isConfirmed = confirm("Are you sure you want to delete this Category?");
 
         if (isConfirmed) {
-            // loop for all courses in the category and delete them
+
+
             const coursesSnapshot = await getDocs(collection(db, "courses"));
             const name = await getCategoryName(categoryId);
             coursesSnapshot.forEach(async(courseDoc) => {
@@ -129,7 +130,7 @@ async function deleteCategory(categoryId) {
 async function updateCategory(categoryId) {
     const newName = prompt("Enter the new name for the category:").trim();
 
-    // 🔹 Validation: At least 3 characters, only letters & spaces
+
     const regex = /^[a-zA-Z\s]+[^\s]$/;
     if (!newName || !regex.test(newName)) {
         alert("Category name must be at least 3 characters long and contain only letters and spaces.");
@@ -139,7 +140,6 @@ async function updateCategory(categoryId) {
     try {
         const categoryRef = doc(db, "categories", categoryId);
 
-        // 🔹 Check if category name already exists (excluding the current one)
         const categoriesSnapshot = await getDocs(collection(db, "categories"));
         const categoryExists = categoriesSnapshot.docs.some(docSnap =>
             docSnap.id !== categoryId && docSnap.data().name.toLowerCase() === newName.toLowerCase()
@@ -153,7 +153,7 @@ async function updateCategory(categoryId) {
         const name = await getCategoryName(categoryId);
         await updateDoc(categoryRef, { name: newName });
 
-        const coursesSnapshot = await getDocs(collection(db, "courses"));
+        //const coursesSnapshot = await getDocs(collection(db, "courses"));
         const snapshot = await getDocs(collection(db, "courses"));
 
 

@@ -1,6 +1,8 @@
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
 }
 
 
@@ -13,6 +15,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 header .logo h1 {
@@ -37,6 +40,9 @@ nav ul li a {
     font-size: 18px;
 }
 
+
+/* Course Cards */
+
 .content-box {
     position: relative;
     overflow: hidden;
@@ -44,6 +50,7 @@ nav ul li a {
     display: flex;
     flex-direction: column;
     height: 450px;
+    min-height: 450px;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     justify-content: space-between;
 }
@@ -104,36 +111,10 @@ nav ul li a {
     cursor: pointer;
 }
 
-.wishlist-btn:hover {
-    background: #0073e6;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 50%;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    padding: 20px;
-}
-
-.modal-content {
-    position: relative;
-}
-
 
 /* Wishlist Button */
 
+.enroll-btn,
 .wishlist-btn {
     background: #ff4081;
     color: white;
@@ -142,6 +123,11 @@ nav ul li a {
     cursor: pointer;
     margin-bottom: 15px;
     border-radius: 5px;
+    transition: background 0.3s ease-in-out;
+}
+
+.wishlist-btn:hover {
+    background: #e6005c;
 }
 
 
@@ -155,10 +141,16 @@ nav ul li a {
     top: 50%;
     transform: translate(-50%, -50%);
     width: 50%;
+    max-width: 90%;
     background: white;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     padding: 20px;
+    overflow-y: auto;
+    max-height: 80vh;
+    max-width: 90%;
+    color: black;
+    text-align: center;
 }
 
 .modal-content {
@@ -182,4 +174,22 @@ footer {
     text-align: center;
     padding: 15px 0;
     margin-top: 20px;
+}
+
+
+/* Responsive Design */
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+    nav ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .content-box {
+        height: auto;
+        min-height: 400px;
+    }
 }

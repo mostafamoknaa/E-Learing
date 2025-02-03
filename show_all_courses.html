@@ -20,23 +20,7 @@
     <header>
         <div class="logo">
             <h1>E-Learning</h1>
-            <div class="container">
-                <button onclick="viewWishlist()" class="wishlist-btn">
-                    View Wishlist <span id="wishlist-count">(0)</span>
-                </button>
 
-                <div id="course-list" class="course-list"></div>
-
-
-                <div id="wishlist-modal" class="modal">
-                    <div class="modal-content">
-                        <span class="close" onclick="closeWishlist()">&times;</span>
-                        <h2>Wishlist</h2>
-                        <div id="wishlist-items"></div>
-                    </div>
-                </div>
-
-            </div>
         </div>
 
         <nav>
@@ -46,10 +30,27 @@
 
                 <li><a href="#about">About</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <li><button id="logout-btn" onclick="logout()">Log out</button></li>
+                <li><button id="logout-btn" onclick="logout()" style="border: none;">Log out</button></li>
             </ul>
         </nav>
     </header>
+    <div class="container">
+        <button onclick="viewWishlist()" class="wishlist-btn">
+            View Wishlist <span id="wishlist-count">(0)</span>
+        </button>
+
+        <div id="course-list" class="course-list"></div>
+
+
+        <div id="wishlist-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeWishlist()">&times;</span>
+                <h2>Wishlist</h2>
+                <div id="wishlist-items"></div>
+            </div>
+        </div>
+
+    </div>
     <div class="container py-5">
         <div class="text-center">
             <h1 class="mb-5">E-Learning System</h1>
