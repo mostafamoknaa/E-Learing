@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 315px;
+            margin-top: 20px;
+        }
+        
+        .no-content {
+            color: red;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="courseTitle"></h1>
+        <img id="courseImage" alt="Course Image">
+        <p><strong>Instructor:</strong> <span id="courseInstructor"></span></p>
+        <p><strong>Price:</strong> <span id="coursePrice"></span></p>
+        <p><strong>Duration:</strong> <span id="courseDuration"></span></p>
+        <p><strong>Description:</strong> <span id="courseDescription"></span></p>
+
+        <h3>Course Content:</h3>
+        <div id="videoContainer"></div>
+    </div>
+
+
+
+    <script type="module" src="script/videos.js"> </script>
+</body>
+
+</html>

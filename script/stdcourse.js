@@ -1,5 +1,13 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-import { getFirestore, collection, onSnapshot, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    query,
+    where,
+    addDoc,
+    onSnapshot
+} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -15,31 +23,38 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-const coursesList = document.getElementById("courses");
+
 let currentUser = null;
 
 onAuthStateChanged(auth, (user) => {
     currentUser = user;
-    loadCourses();
+    if (user) {
+        loadCourses();
+    }
 });
-
 
 async function loadCourses() {
     const coursesContainer = document.getElementById("courses-container");
+    if (!coursesContainer) return;
+
     coursesContainer.innerHTML = "<p>Loading courses...</p>";
 
     try {
         const querySnapshot = await getDocs(collection(db, "courses"));
         coursesContainer.innerHTML = "";
 
-        querySnapshot.forEach(async(doc) => {
+        const coursePromises = querySnapshot.docs.map(async(doc) => {
             const course = doc.data();
             let enrollmentStatus = "not enrolled";
             let enrollmentId = null;
 
             if (currentUser) {
                 const enrollmentRef = collection(db, "enrollment");
-                const q = query(enrollmentRef, where("courseId", "==", doc.id), where("userId", "==", currentUser.uid));
+                const q = query(
+                    enrollmentRef,
+                    where("courseId", "==", doc.id),
+                    where("userId", "==", currentUser.uid)
+                );
                 const enrollmentSnapshot = await getDocs(q);
 
                 if (!enrollmentSnapshot.empty) {
@@ -49,24 +64,29 @@ async function loadCourses() {
                 }
             }
 
-            let buttonText = "Enroll";
-            if (enrollmentStatus === "approved") {
-                buttonText = "Open Course";
-            } else if (enrollmentStatus === "pending") {
-                buttonText = "Pending Approval";
-            }
+            const buttonText = enrollmentStatus === "approved" ? "Open Course" :
+                enrollmentStatus === "pending" ? "Pending Approval" : "Enroll";
 
-            const courseHTML = `
+            return `
                 <div class="col-md-4">
                     <div class="content-box">
-                        <img src="${course.image}" alt="${course.title}">
+                        <img src="${course.image || ''}" alt="${course.title}" onerror="this.src='default-course-image.jpg'">
                         <div class="content-info">
                             <h5>${course.title}</h5>
                             <p><strong>Instructor:</strong> ${course.instructor}</p>
                             <p><strong>Price:</strong> $${course.price}</p>
                             <div class="btn-group">
-                                <button class="enroll-btn" class="wishlist-btn" data-id="${doc.id}" data-enrollment-id="${enrollmentId}" ${enrollmentStatus === "pending" ? "disabled" : ""}>${buttonText}</button>
-                                <button class="wishlist-btn" data-id="${doc.id}" data-title="${course.title}" data-image="${course.image}" data-price="${course.price}">
+                                <button class="enroll-btn" 
+                                    data-id="${doc.id}" 
+                                    data-enrollment-id="${enrollmentId}" 
+                                    ${enrollmentStatus === "pending" ? "disabled" : ""}>
+                                    ${buttonText}
+                                </button>
+                                <button class="wishlist-btn" 
+                                    data-id="${doc.id}" 
+                                    data-title="${course.title}" 
+                                    data-image="${course.image || ''}" 
+                                    data-price="${course.price}">
                                     Add to Wishlist
                                 </button>
                             </div>
@@ -74,33 +94,37 @@ async function loadCourses() {
                     </div>
                 </div>
             `;
-            coursesContainer.innerHTML += courseHTML;
         });
 
-        setTimeout(() => {
-            document.querySelectorAll(".enroll-btn").forEach(button => {
-                button.addEventListener("click", handleEnrollment);
-            });
-            document.querySelectorAll(".wishlist-btn").forEach(button => {
-                button.addEventListener("click", (event) => {
-                    const { id, title, image, price } = event.target.dataset;
-                    toggleWishlist(id, title, image, price);
-                });
-            });
-        }, 500);
+        const courseElements = await Promise.all(coursePromises);
+        coursesContainer.innerHTML = courseElements.join('');
 
         watchEnrollmentStatus();
+        loadWishlistIcons();
+        attachEventListeners();
     } catch (error) {
         console.error("Error fetching courses:", error);
         coursesContainer.innerHTML = "<p>Error loading courses. Please try again.</p>";
     }
 }
 
-window.enrollToCourse = function(courseId) {
-    document.querySelector(`button[data-id="${courseId}"]`).click();
-    removeFromWishlist(courseId);
-};
+function attachEventListeners() {
+    document.querySelectorAll(".enroll-btn").forEach(button => {
+        button.addEventListener("click", handleEnrollment);
+    });
+}
 
+
+document.querySelectorAll(".enroll-btn").forEach(button => {
+    button.addEventListener("click", handleEnrollment);
+});
+
+document.addEventListener("click", (event) => {
+    if (event.target.classList.contains("wishlist-btn")) {
+        const { id, title, image, price } = event.target.dataset;
+        addWishlist(id, title, image, price);
+    }
+});
 
 async function handleEnrollment(event) {
     if (!currentUser) {
@@ -129,7 +153,7 @@ async function handleEnrollment(event) {
                 status: "pending"
             });
 
-            alert("Enrollment request submitted. Waiting for approval.");
+
         } catch (error) {
             console.error("Error enrolling in course:", error);
         }
@@ -154,7 +178,7 @@ function watchEnrollmentStatus() {
                     button.innerText = "Open Course";
                     button.disabled = false;
                     button.addEventListener("click", () => {
-                        window.location.href = `courseContent.html?courseId=${courseId}`;
+                        window.location.href = `vidoes.html?courseId=${courseId}`;
                     });
                 } else if (status === "pending") {
                     button.innerText = "Pending Approval";
@@ -171,12 +195,13 @@ function getWishlist() {
     return JSON.parse(localStorage.getItem("wishlist")) || [];
 }
 
+
 function saveWishlist(wishlist) {
     localStorage.setItem("wishlist", JSON.stringify(wishlist));
 }
 
 
-window.toggleWishlist = function(id, title, image, price) {
+function addWishlist(id, title, image, price) {
     let wishlist = getWishlist();
     let index = wishlist.findIndex(item => item.id === id);
 
@@ -184,18 +209,26 @@ window.toggleWishlist = function(id, title, image, price) {
         wishlist.push({ id, title, image, price });
     }
 
+    const button = document.querySelector(`.wishlist-btn[data-id="${id}"]`);
+    if (button) {
+        button.textContent = "Course Added to Wishlist";
+        button.disabled = true; // Optionally disable the button after adding
+    }
     saveWishlist(wishlist);
     updateWishlistCount();
     loadWishlistIcons();
-};
+}
+
 
 
 
 function loadWishlistIcons() {
-    let wishlist = getWishlist();
+    const wishlist = getWishlist();
     document.querySelectorAll(".wishlist-btn").forEach(button => {
-        let courseId = button.getAttribute("onclick").match(/'([^']+)'/)[1];
-        button.textContent = wishlist.some(item => item.id === courseId) ? "Remove from Wishlist" : "Add to Wishlist";
+        const courseId = button.dataset.id;
+        button.textContent = wishlist.some(item => item.id === courseId) ?
+            "View Wishlist" :
+            "Add to Wishlist";
     });
 }
 
@@ -205,8 +238,6 @@ window.viewWishlist = function() {
     let wishlistModal = document.getElementById("wishlist-modal");
     let wishlist = getWishlist();
 
-
-
     if (wishlist.length === 0) {
         wishlistItems.innerHTML = "<p>No items in wishlist.</p>";
     } else {
@@ -215,27 +246,27 @@ window.viewWishlist = function() {
                 <img src="${item.image}" width="100">
                 <p>${item.title} - $${item.price}</p>
                 <button onclick="removeFromWishlist('${item.id}')" class="wishlist-btn">Remove</button>
-                 <button onclick="enrollToCourse('${item.id}')" class="wishlist-btn">Enroll</button>
             </div>
         `).join("");
     }
 
     wishlistModal.style.display = "block";
+    updateWishlistCount();
 };
 
-
-window.enrollToCourse = function(courseId) {
-    console.log("Enrolling in course with ID:", courseId);
-    removeFromWishlist(courseId);
-
-};
 
 window.removeFromWishlist = function(id) {
     let wishlist = getWishlist().filter(item => item.id !== id);
+
+
+    // Update all instances of the button in the document
+    document.querySelectorAll(`.wishlist-btn[data-id="${id}"]`).forEach(button => {
+        button.textContent = "Add to Wishlist";
+        button.disabled = false;
+    });
     saveWishlist(wishlist);
     viewWishlist();
     updateWishlistCount();
-    loadWishlistIcons();
 };
 
 
@@ -247,6 +278,8 @@ window.closeWishlist = function() {
 
 function updateWishlistCount() {
     let wishlist = getWishlist();
-    document.getElementById("wishlist-count").textContent = `(${wishlist.length})`;
+    document.getElementById("wishlist-count").textContent = `${wishlist.length}`;
 }
+
+
 document.addEventListener("DOMContentLoaded", loadCourses);

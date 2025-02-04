@@ -69,7 +69,7 @@ async function fetchCourses() {
         categoryFilter.appendChild(option);
     });
 
-    loadWishlistIcons();
+
 }
 
 function getWishlist() {
@@ -86,22 +86,22 @@ window.toggleWishlist = function(id, title, image, price) {
 
     if (index === -1) {
         wishlist.push({ id, title, image, price });
-    } else {
-        wishlist.splice(index, 1); // Remove if already exists
     }
-
     saveWishlist(wishlist);
     updateWishlistCount();
     loadWishlistIcons();
 };
 
 function loadWishlistIcons() {
-    let wishlist = getWishlist();
+    const wishlist = getWishlist();
     document.querySelectorAll(".wishlist-btn").forEach(button => {
-        let courseId = button.dataset.id;
-        button.textContent = wishlist.some(item => item.id === courseId) ? "Remove from Wishlist" : "Add to Wishlist";
+        const courseId = button.dataset.id;
+        button.textContent = wishlist.some(item => item.id === courseId) ?
+            "View Wishlist" :
+            "Add to Wishlist";
     });
 }
+
 
 window.viewWishlist = function() {
     let wishlistItems = document.getElementById("wishlist-items");
@@ -125,10 +125,6 @@ window.viewWishlist = function() {
     updateWishlistCount();
 };
 
-window.enrollToCourse = function(courseId) {
-    console.log("Enrolling in course with ID:", courseId);
-    removeFromWishlist(courseId);
-};
 
 window.removeFromWishlist = function(id) {
     let wishlist = getWishlist().filter(item => item.id !== id);

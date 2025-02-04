@@ -22,7 +22,7 @@ import {
     onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
 
-// Firebase configuration
+
 const firebaseConfig = {
     apiKey: "AIzaSyCBckLKiCtLIFvXX3SLfyCaszC-vFDL3JA",
     authDomain: "ecommerce-9d94f.firebaseapp.com",
@@ -33,24 +33,24 @@ const firebaseConfig = {
     measurementId: "G-V7Q9HY61C5"
 };
 
-// Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
 let currentUser = null;
 
-// Listen for authentication changes
+
 onAuthStateChanged(auth, (user) => {
     currentUser = user;
     if (user) loadCourses();
 });
 
-// Elements
+
 const registrationTable = document.getElementById("enrollment-table");
 const statusFilter = document.getElementById("status-filter");
 
-// Fetch enrollments based on selected status
+
 async function fetchEnrollments() {
     const tableBody = registrationTable.querySelector("tbody");
     tableBody.innerHTML = "";
@@ -67,6 +67,7 @@ async function fetchEnrollments() {
             if (selectedStatus !== "all" && request.status !== selectedStatus) continue;
 
             const studentName = await getStudentName(request.studentId);
+            console.log("Student:", request.studentId);
             const courseTitle = await getCourseTitle(request.courseId);
 
             const row = `
@@ -89,16 +90,29 @@ async function fetchEnrollments() {
     }
 }
 
-// Fetch student name
+
 async function getStudentName(studentId) {
+    console.log("Student ID:", studentId);
+    if (!studentId) {
+        return "Unknown";
+    }
+
     try {
-        const studentSnap = await getDoc(doc(db, "student", studentId));
-        return studentSnap.exists() ? studentSnap.data().name : "Unknown Student";
+        const studentRef = doc(db, "student", studentId);
+        const studentSnap = await getDoc(studentRef);
+
+        const studentData = studentSnap.data();
+        if (!studentSnap.exists() || !studentData.name) {
+            return "Unknown Student";
+        }
+
+        return studentData.name.trim();
     } catch (error) {
         console.error("Error fetching student name:", error);
-        return "Unknown Student";
+        return "Student";
     }
 }
+
 
 // Fetch course title
 async function getCourseTitle(courseId) {
@@ -118,7 +132,6 @@ async function approveRequest(requestId, studentId, courseId) {
 
         await sendNotification(studentId, `Your enrollment in "${await getCourseTitle(courseId)}" has been approved!`);
 
-        alert("Enrollment approved!");
         fetchEnrollments();
     } catch (error) {
         console.error("Error approving request:", error);
@@ -132,7 +145,7 @@ async function rejectRequest(requestId, studentId, courseId) {
 
         await sendNotification(studentId, `Your enrollment in "${await getCourseTitle(courseId)}" has been rejected.`);
 
-        alert("Enrollment rejected!");
+
         fetchEnrollments();
     } catch (error) {
         console.error("Error rejecting request:", error);
@@ -153,7 +166,7 @@ async function sendNotification(studentId, message) {
     }
 }
 
-// Attach event listeners to buttons
+
 function attachEventListeners() {
     document.querySelectorAll(".approve-btn").forEach(button => {
         button.addEventListener("click", async() => {
@@ -174,8 +187,7 @@ function attachEventListeners() {
     });
 }
 
-// Filter enrollments on change
 statusFilter.addEventListener("change", fetchEnrollments);
 
-// Load enrollments on page load
+
 window.onload = fetchEnrollments;

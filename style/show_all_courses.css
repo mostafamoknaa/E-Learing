@@ -130,6 +130,10 @@ nav ul li a {
     background: #e6005c;
 }
 
+.enroll-btn:hover {
+    background: darkolivegreen;
+}
+
 
 /* Modal Styling */
 
