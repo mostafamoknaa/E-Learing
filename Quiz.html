@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" href="images/e-learning.jpeg" type="image/x-icon" />
+    <link rel="stylesheet" href="style/quize.css">
+    <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js"></script>
+    <title>Quiz Page</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="title">Quiz Page</h1>
+        <form id="quizForm">
+            <div class="question">
+                <p>1. What is the capital of France?</p>
+                <div class="options">
+
+                    <label><input type="radio" name="q1" value="Paris"> Paris</label>
+                    <label><input type="radio" name="q1" value="London"> London</label>
+                    <label><input type="radio" name="q1" value="Berlin"> Berlin</label>
+                </div>
+            </div>
+            <div class="question">
+                <p>2. What is 2 + 2?</p>
+                <div class="options">
+                    <label><input type="radio" name="q2" value="3"> 3</label>
+                    <label><input type="radio" name="q2" value="4"> 4</label>
+                    <label><input type="radio" name="q2" value="5"> 5</label>
+                </div>
+            </div>
+            <div class="question">
+                <p>3. What is the largest planet in our solar system?</p>
+                <div class="options">
+                    <label><input type="radio" name="q3" value="Earth"> Earth</label>
+                    <label><input type="radio" name="q3" value="Mars"> Mars</label>
+                    <label><input type="radio" name="q3" value="Jupiter"> Jupiter</label>
+                </div>
+            </div>
+            <div class="question">
+                <p>4. Who wrote 'To Kill a Mockingbird'?</p>
+                <div class="options">
+                    <label><input type="radio" name="q4" value="Harper Lee"> Harper Lee</label>
+                    <label><input type="radio" name="q4" value="J.K. Rowling"> J.K. Rowling</label>
+                    <label><input type="radio" name="q4" value="Ernest Hemingway"> Ernest Hemingway</label>
+                </div>
+            </div>
+            <div class="question">
+                <p>5. What is the chemical symbol for water?</p>
+                <div class="options">
+                    <label><input type="radio" name="q5" value="O2"> O2</label>
+                    <label><input type="radio" name="q5" value="H2O"> H2O</label>
+                    <label><input type="radio" name="q5" value="CO2"> CO2</label>
+                </div>
+            </div>
+            <button type="button" onclick="submitQuiz()">Submit</button>
+        </form>
+        <p id="result"></p>
+    </div>
+
+</body>
+<script src="script/quize.js"></script>
+</script>
+
+</html>
