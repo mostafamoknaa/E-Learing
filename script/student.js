@@ -88,9 +88,10 @@ async function loadStudents() {
 
             const courseName = courseNames[courseId] || "Unknown Course";
             if (isFinished) {
-                studentCourses[studentId].completedCourses.push(courseName);
-            } else {
                 studentCourses[studentId].uncompletedCourses.push(courseName);
+            } else {
+
+                studentCourses[studentId].completedCourses.push(courseName);
             }
         });
 
