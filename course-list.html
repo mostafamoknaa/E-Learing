@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+    <link rel="icon" href="images/e-learning.jpeg" type="image/x-icon" />
+    <title>Available Courses</title>
+    <link rel="stylesheet" href="style/course-list.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Available Courses</h2>
+
+        <!-- Search & Filters -->
+        <div class="filters">
+            <input type="text" id="search-bar" placeholder="Search courses..." onkeyup="applyFilters()">
+            <select id="category-filter" onchange="applyFilters()">
+                <option value="all">All Categories</option>
+            </select>
+        </div>
+
+
+        <button onclick="viewWishlist()" class="wishlist-btn">
+            View Wishlist <span id="wishlist-count">(0)</span>
+        </button>
+
+
+
+        <div id="course-list" class="course-list"></div>
+
+
+        <div id="wishlist-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeWishlist()">&times;</span>
+                <h2>Wishlist</h2>
+                <div id="wishlist-items"></div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+<script type="module" src="script/course-list.js"></script>
+
+</html>

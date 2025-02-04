@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+    <link rel="icon" href="images/e-learning.jpeg" type="image/x-icon" />
+    <title>E-Learning System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style/show_all_courses.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">
+            <h1>E-Learning</h1>
+
+        </div>
+
+        <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="show_all_courses.html">Courses</a></li>
+
+                <li><a href="showHistory.html">History</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><button id="logout-btn" onclick="logout()">Log out</button></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <button onclick="viewWishlist()" class="wishlist-btn">
+            View Wishlist <span id="wishlist-count">(0)</span>
+        </button>
+
+        <label for="status-filter">Filter by Category:</label>
+        <select id="status-filter">
+            <option value="all">All</option>
+        </select>
+
+        <div id="course-list" class="course-list"></div>
+
+        <div id="wishlist-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeWishlist()">&times;</span>
+                <h2>Wishlist</h2>
+                <div id="wishlist-items"></div>
+            </div>
+        </div>
+
+    </div>
+    <div class="container py-5">
+        <div class="text-center">
+            <h1 class="mb-5">E-Learning System</h1>
+        </div>
+
+        <div class="row g-4" id="courses-container">
+
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 M.A.M.A All rights reserved.</p>
+    </footer>
+
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module" src="script/stdcourse.js"></script>
+<script>
+    function logout() {
+        window.location.href = "form.html";
+        localStorage.removeItem("userToken");
+    }
+</script>
+
+</html>

@@ -1,0 +1,75 @@
+/* General Styles */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+#admin-dashboard {
+    max-width: 1000px;
+    margin: 15px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Form Styles */
+
+#course-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+#course-form h2 {
+    text-align: center;
+    grid-column: span 2;
+    font-size: 1.5rem;
+    color: #0056b3;
+    margin-bottom: 20px;
+}
+
+#course-form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-left: 40px;
+}
+
+#course-form select,
+#course-form input,
+#course-form textarea,
+#course-form button {
+    width: 80%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 1rem;
+    margin-right: 40px;
+}
+
+#course-form textarea {
+    resize: none;
+    height: 100px;
+}
+
+#course-form button {
+    grid-column: span 2;
+    background-color: green;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin-left: 250px;
+    width: 50%;
+}
+
+#course-form button:hover {
+    background-color: #004494;
+}

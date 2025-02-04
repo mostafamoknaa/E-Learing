@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+    <link rel="icon" href="images/e-learning.jpeg" type="image/x-icon" />
+    <title>Show Courses</title>
+    <link rel="stylesheet" href="style/showcourses.css">
+</head>
+
+<body>
+    <div id="admin-dashboard">
+
+        <h2>Manage Courses</h2>
+        <table id="course-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Image</th>
+                    <th>Category</th>
+                    <th>Instructor</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Duration</th>
+                    <th colspan="2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+        <div id="update-form" style="display: none;">
+            <h3>Update Course</h3>
+            <input type="hidden" id="course-id" />
+
+            <label>Title:</label>
+            <input type="text" id="course-title" required /><br>
+
+            <label>Image URL:</label>
+            <input type="url" id="course-image" required /><br>
+
+            <label for="course-category">Category:</label>
+            <select id="course-category" required></select>
+
+            <label>Instructor Name:</label>
+            <input type="text" id="course-instructor" required /><br>
+
+            <label>Description:</label>
+            <textarea id="course-description" required></textarea><br>
+
+            <label>Price:</label>
+            <input type="number" id="course-price" required /><br>
+
+            <label>Duration (in hours):</label>
+            <input type="number" id="course-duration" required /><br>
+
+            <button id="save-update">Save Changes</button>
+        </div>
+    </div>
+
+</body>
+<script type="module" src="script/deletecourse.js"></script>
+
+</html>

@@ -1,0 +1,155 @@
+/* General Page Styling */
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+
+/* Admin Dashboard Styling */
+
+#admin-dashboard {
+    max-width: 90%;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Heading */
+
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+
+/* Filter Dropdown */
+
+label {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#status-filter {
+    padding: 8px;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+
+/* Table Styling */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th,
+td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: green;
+    color: white;
+    font-size: 18px;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+
+
+/* Course Image */
+
+td img {
+    width: 80px;
+    height: 50px;
+    border-radius: 5px;
+}
+
+
+/* Action Buttons */
+
+button {
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+
+/* Edit Button */
+
+.edit-btn {
+    background-color: #ffc107;
+    color: black;
+}
+
+
+/* Delete Button */
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+
+/* Update Form Styling */
+
+#update-form {
+    display: none;
+    width: 50%;
+    margin: auto;
+    background: white;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#update-form h3 {
+    text-align: center;
+    color: #007BFF;
+}
+
+#update-form input,
+#update-form select,
+#update-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+#save-update {
+    width: 50%;
+    margin-left: 140px;
+    background-color: #007BFF;
+    color: white;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+#save-update:hover {
+    background-color: green;
+}
