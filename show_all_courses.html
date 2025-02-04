@@ -39,8 +39,12 @@
             View Wishlist <span id="wishlist-count">(0)</span>
         </button>
 
-        <div id="course-list" class="course-list"></div>
+        <label for="status-filter">Filter by Category:</label>
+        <select id="status-filter">
+            <option value="all">All</option>
+        </select>
 
+        <div id="course-list" class="course-list"></div>
 
         <div id="wishlist-modal" class="modal">
             <div class="modal-content">
@@ -57,10 +61,10 @@
         </div>
 
         <div class="row g-4" id="courses-container">
-            <!-- Courses will be loaded here dynamically -->
+
         </div>
     </div>
-    <!-- Footer -->
+
     <footer>
         <p>&copy; 2025 M.A.M.A All rights reserved.</p>
     </footer>

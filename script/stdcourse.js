@@ -33,6 +33,11 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
+
+
+
+
+
 async function loadCourses() {
     const coursesContainer = document.getElementById("courses-container");
     if (!coursesContainer) return;
