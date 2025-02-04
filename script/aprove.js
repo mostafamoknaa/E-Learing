@@ -67,7 +67,7 @@ async function fetchEnrollments() {
             if (selectedStatus !== "all" && request.status !== selectedStatus) continue;
 
             const studentName = await getStudentName(request.userId);
-            console.log("Student:", request.studentId);
+            //console.log("Student:", request.studentId);
             const courseTitle = await getCourseTitle(request.courseId);
 
             const row = `
@@ -92,7 +92,7 @@ async function fetchEnrollments() {
 
 
 async function getStudentName(studentId) {
-    console.log("Student ID:", studentId);
+    //console.log("Student ID:", studentId);
     if (!studentId) {
         return "Unknown";
     }

@@ -55,8 +55,11 @@ async function fetchCategories() {
             updateButton.setAttribute("data-id", doc.id);
             updateButton.onclick = () => updateCategory(doc.id);
 
+
             td4.appendChild(deleteButton);
             td3.appendChild(updateButton);
+
+
             tr.appendChild(td1);
             tr.appendChild(td2);
             tr.appendChild(td3);
@@ -128,8 +131,12 @@ async function deleteCategory(categoryId) {
 
 
 async function updateCategory(categoryId) {
-    const newName = prompt("Enter the new name for the category:").trim();
 
+
+    //const newName = prompt("Enter the new name for the category:").trim();
+
+    categoryNameInput.focus();
+    const newName = categoryNameInput.value.trim();
 
     const regex = /^[a-zA-Z\s]+[^\s]$/;
     if (!newName || !regex.test(newName)) {
