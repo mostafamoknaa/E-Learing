@@ -66,7 +66,7 @@ async function fetchEnrollments() {
 
             if (selectedStatus !== "all" && request.status !== selectedStatus) continue;
 
-            const studentName = await getStudentName(request.studentId);
+            const studentName = await getStudentName(request.userId);
             console.log("Student:", request.studentId);
             const courseTitle = await getCourseTitle(request.courseId);
 
@@ -114,7 +114,7 @@ async function getStudentName(studentId) {
 }
 
 
-// Fetch course title
+
 async function getCourseTitle(courseId) {
     try {
         const courseSnap = await getDoc(doc(db, "courses", courseId));
@@ -125,7 +125,7 @@ async function getCourseTitle(courseId) {
     }
 }
 
-// Approve enrollment request
+
 async function approveRequest(requestId, studentId, courseId) {
     try {
         await updateDoc(doc(db, "enrollment", requestId), { status: "approved" });
@@ -138,7 +138,7 @@ async function approveRequest(requestId, studentId, courseId) {
     }
 }
 
-// Reject enrollment request
+
 async function rejectRequest(requestId, studentId, courseId) {
     try {
         await updateDoc(doc(db, "enrollment", requestId), { status: "rejected" });
@@ -152,7 +152,6 @@ async function rejectRequest(requestId, studentId, courseId) {
     }
 }
 
-// Send notification
 async function sendNotification(studentId, message) {
     try {
         await addDoc(collection(db, "notifications"), {

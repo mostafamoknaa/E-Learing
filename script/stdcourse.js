@@ -192,6 +192,7 @@ function watchEnrollmentStatus() {
 
 
 function getWishlist() {
+
     return JSON.parse(localStorage.getItem("wishlist")) || [];
 }
 
@@ -212,7 +213,7 @@ function addWishlist(id, title, image, price) {
     const button = document.querySelector(`.wishlist-btn[data-id="${id}"]`);
     if (button) {
         button.textContent = "Course Added to Wishlist";
-        button.disabled = true; // Optionally disable the button after adding
+        button.disabled = true;
     }
     saveWishlist(wishlist);
     updateWishlistCount();
@@ -224,6 +225,7 @@ function addWishlist(id, title, image, price) {
 
 function loadWishlistIcons() {
     const wishlist = getWishlist();
+
     document.querySelectorAll(".wishlist-btn").forEach(button => {
         const courseId = button.dataset.id;
         button.textContent = wishlist.some(item => item.id === courseId) ?
@@ -259,7 +261,6 @@ window.removeFromWishlist = function(id) {
     let wishlist = getWishlist().filter(item => item.id !== id);
 
 
-    // Update all instances of the button in the document
     document.querySelectorAll(`.wishlist-btn[data-id="${id}"]`).forEach(button => {
         button.textContent = "Add to Wishlist";
         button.disabled = false;
@@ -267,6 +268,7 @@ window.removeFromWishlist = function(id) {
     saveWishlist(wishlist);
     viewWishlist();
     updateWishlistCount();
+    loadWishlistIcons();
 };
 
 

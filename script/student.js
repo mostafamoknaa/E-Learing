@@ -52,15 +52,14 @@ async function getStudentNames() {
 // Function to load students and their courses
 async function loadStudents() {
     try {
-        const courseNames = await getCourseNames(); // Fetch all course names
-        const studentNames = await getStudentNames(); // Fetch all student names
+        const courseNames = await getCourseNames();
+        const studentNames = await getStudentNames();
         const querySnapshot = await getDocs(collection(db, "coursecompleted"));
 
         studentTableBody.innerHTML = "";
         let index = 1;
-        const studentCourses = {}; // Store student-wise course data
+        const studentCourses = {};
 
-        // Organize data by student
         querySnapshot.forEach((doc) => {
             const record = doc.data();
             const studentId = record.userId;

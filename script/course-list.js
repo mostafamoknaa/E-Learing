@@ -143,4 +143,6 @@ function updateWishlistCount() {
     document.getElementById("wishlist-count").textContent = `(${wishlist.length})`;
 }
 
+localStorage.removeItem("wishlist");
+
 window.onload = fetchCourses;
