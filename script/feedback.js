@@ -2,10 +2,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebas
 import {
     getFirestore,
     collection,
-    getDocs
+    getDocs,
+    query,
+    where,
+    doc,
+    getDoc
 } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
 
-// ✅ Firebase Configuration
+
 const firebaseConfig = {
     apiKey: "AIzaSyCBckLKiCtLIFvXX3SLfyCaszC-vFDL3JA",
     authDomain: "ecommerce-9d94f.firebaseapp.com",
@@ -16,25 +20,51 @@ const firebaseConfig = {
     measurementId: "G-V7Q9HY61C5"
 };
 
-// ✅ Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ✅ Select Feedback List Container
+const urlParams = new URLSearchParams(window.location.search);
+const courseId = urlParams.get("courseId");
 const feedbackList = document.getElementById("feedback-list");
 
-// ✅ Fetch Feedback from Firebase
 async function fetchFeedback() {
     try {
+        if (!courseId) {
+            feedbackList.innerHTML = "<p>Invalid Course ID.</p>";
+            return;
+        }
+
+
         const feedbackRef = collection(db, "feedback");
-        const querySnapshot = await getDocs(feedbackRef);
-        const feedbacks = [];
+        const q = query(feedbackRef, where("courseId", "==", courseId));
+        const querySnapshot = await getDocs(q);
 
-        querySnapshot.forEach((doc) => {
-            feedbacks.push(doc.data());
-        });
+        if (querySnapshot.empty) {
+            feedbackList.innerHTML = "<p>No feedback available yet.</p>";
+            return;
+        }
 
-        renderFeedback(feedbacks);
+        feedbackList.innerHTML = "";
+
+
+        for (const docSnap of querySnapshot.docs) {
+            const feedback = docSnap.data();
+            const studentName = await getStudentName(feedback.userId);
+
+            const feedbackCard = document.createElement("div");
+            feedbackCard.classList.add("feedback-card");
+
+            feedbackCard.innerHTML = `
+                <img src="${feedback.userAvatar || 'images/Avatar.png'}" alt="User Avatar" class="user-avatar">
+                <div class="feedback-content">
+                    <p class="feedback-user">${studentName || "Anonymous"}</p>
+                    <p class="rating">${generateStars(feedback.rating)}</p>
+                    <p class="feedback-text">${feedback.feedback || "No feedback provided."}</p>
+                </div>
+            `;
+
+            feedbackList.appendChild(feedbackCard);
+        }
     } catch (error) {
         console.error("Error fetching feedback:", error);
         feedbackList.innerHTML = "<p>Error loading feedback.</p>";
@@ -42,49 +72,18 @@ async function fetchFeedback() {
 }
 
 
-function renderFeedback(feedbacks) {
-    feedbackList.innerHTML = "";
-
-    if (feedbacks.length === 0) {
-        feedbackList.innerHTML = "<p>No feedback available yet.</p>";
-        return;
-    }
-
-    const name = getStudentName(feedbacks.userId);
-
-    feedbacks.forEach((feedback) => {
-        const feedbackCard = document.createElement("div");
-        feedbackCard.classList.add("feedback-card");
-
-        feedbackCard.innerHTML = `
-            <img src="${feedback.userAvatar || 'images/Avatar.png'}" alt="User Avatar" class="user-avatar">
-            <div class="feedback-content">
-                <p class="feedback-user">${name || "Anonymous"}</p>
-                <p class="rating">${generateStars(feedback.rating)}</p>
-                <p class="feedback-text">${feedback.feedback || "No feedback provided."}</p>
-            </div>
-        `;
-
-        feedbackList.appendChild(feedbackCard);
-    });
-}
-
 async function getStudentName(studentId) {
-    //console.log("Student ID:", studentId);
-    if (!studentId) {
-        return "Unknown";
-    }
+    if (!studentId) return "Unknown";
 
     try {
         const studentRef = doc(db, "student", studentId);
         const studentSnap = await getDoc(studentRef);
 
-        const studentData = studentSnap.data();
-        if (!studentSnap.exists() || !studentData.name) {
+        if (studentSnap.exists()) {
+            return studentSnap.data().name || "Unknown Student";
+        } else {
             return "Unknown Student";
         }
-
-        return studentData.name.trim();
     } catch (error) {
         console.error("Error fetching student name:", error);
         return "Student";
@@ -93,8 +92,8 @@ async function getStudentName(studentId) {
 
 
 function generateStars(rating) {
-    const stars = "★".repeat(rating) + "☆".repeat(5 - rating);
-    return `<span>${stars}</span>`;
+    return "★".repeat(rating) + "☆".repeat(5 - rating);
 }
+
 
 fetchFeedback();

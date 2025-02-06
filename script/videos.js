@@ -185,7 +185,7 @@ async function loadCourseContent() {
                 });
             });
 
-            // Submit feedback and rating
+
             submitFeedbackButton.addEventListener("click", async() => {
                 if (!currentUser) {
                     alert("Please log in to submit feedback.");
@@ -199,7 +199,7 @@ async function loadCourseContent() {
                 }
 
                 try {
-                    // Store feedback and rating in Firestore
+
                     await addDoc(collection(db, "feedback"), {
                         userId: currentUser.uid,
                         courseId: courseId,
@@ -228,6 +228,11 @@ async function loadCourseContent() {
             alert("Course not found!");
             window.location.href = "index.html";
         }
+
+        document.getElementById("showFeedback").addEventListener("click", function() {
+            window.location.href = `feedback.html?courseId=${courseId}`;
+        });
+
     }, (error) => {
         console.error("Error loading course content:", error);
         alert("An error occurred while loading the course content.");
