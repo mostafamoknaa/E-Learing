@@ -44,15 +44,23 @@
             <option value="all">All</option>
         </select>
 
-        <div id="course-list" class="course-list"></div>
+        <div style="float:right ;"></div>
+        <label for="search">Search:</label>
+        <input type="text" id="search-input" placeholder="Search...">
+        <button onclick="searchCourses()" id="search-button">Search</button>
+    </div>
 
-        <div id="wishlist-modal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeWishlist()">&times;</span>
-                <h2>Wishlist</h2>
-                <div id="wishlist-items"></div>
-            </div>
+
+
+    <div id="course-list" class="course-list"></div>
+
+    <div id="wishlist-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeWishlist()">&times;</span>
+            <h2>Wishlist</h2>
+            <div id="wishlist-items"></div>
         </div>
+    </div>
 
     </div>
     <div class="container py-5">
