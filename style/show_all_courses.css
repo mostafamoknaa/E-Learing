@@ -9,8 +9,8 @@ body {
 /* Header */
 
 header {
-    background: gray;
-    color: white;
+    background: #f0f0f0;
+    color: black;
     padding: 15px 20px;
     display: flex;
     justify-content: space-between;
@@ -35,7 +35,7 @@ nav ul li {
 }
 
 nav ul li a {
-    color: white;
+    color: black;
     text-decoration: none;
     font-size: 18px;
 }
@@ -131,9 +131,15 @@ nav ul li a {
 
 /* Wishlist Button */
 
+#search-input {
+    border-radius: 10px;
+    border-color: #df4adf;
+}
+
+.search-btn,
 .enroll-btn,
 .wishlist-btn {
-    background: #ff4081;
+    background: #df4adf;
     color: white;
     padding: 10px 15px;
     border: none;
@@ -190,8 +196,8 @@ nav ul li a {
 /* Footer */
 
 footer {
-    background: gray;
-    color: white;
+    background: #f0f0f0;
+    color: black;
     text-align: center;
     padding: 15px 0;
     margin-top: 20px;
@@ -216,8 +222,9 @@ footer {
 }
 
 #logout-btn {
-    background-color: darkolivegreen;
-    color: black;
+    background-color: #df4adf;
+    /* نفس اللون الهيدر للـ logout */
+    color: white;
     padding: 10px 15px;
     border: none;
     cursor: pointer;

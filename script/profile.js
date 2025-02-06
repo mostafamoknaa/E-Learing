@@ -10,7 +10,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
 
-// ✅ Firebase Configuration
+
 const firebaseConfig = {
     apiKey: "AIzaSyCBckLKiCtLIFvXX3SLfyCaszC-vFDL3JA",
     authDomain: "ecommerce-9d94f.firebaseapp.com",
@@ -21,19 +21,19 @@ const firebaseConfig = {
     measurementId: "G-V7Q9HY61C5"
 };
 
-// ✅ Initialize Firebase Services
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// ✅ DOM Elements
+
 const userName = document.getElementById("user-name");
 const userEmail = document.getElementById("user-email");
 const userAvatar = document.getElementById("user-avatar");
 const gridContainer = document.querySelector(".grid");
 const logoutButton = document.getElementById("logout-button");
 
-// ✅ Fetch User Profile Data
+
 async function fetchUserProfile(userId) {
     try {
         const userRef = doc(db, "student", userId);
@@ -42,18 +42,15 @@ async function fetchUserProfile(userId) {
         if (userSnap.exists()) {
             const userData = userSnap.data();
             userName.textContent = userData.name || "No Name";
-            userEmail.textContent = userData.email || "No Email"; // 🔹 Fix: Fetch email properly
             userAvatar.src = userData.avatar || "images/Avatar.png";
         } else {
             userName.textContent = "Unknown User";
-            userEmail.textContent = "No Email Found";
         }
     } catch (error) {
         console.error("Error fetching user profile:", error);
     }
 }
 
-// ✅ Fetch Completed Courses
 async function fetchCompletedCourses(userId) {
     try {
         const completedCoursesQuery = query(
@@ -75,17 +72,18 @@ async function fetchCompletedCourses(userId) {
             const courseData = docSnap.data();
             const courseId = courseData.courseId;
 
-            // ✅ Fetch Course Details
+
             const courseRef = doc(db, "courses", courseId);
             const courseSnap = await getDoc(courseRef);
 
             if (courseSnap.exists()) {
                 const courseInfo = courseSnap.data();
                 courses.push({
+                    id: courseId,
                     title: courseInfo.title || "Untitled Course",
                     image: courseInfo.image || "images/default-course.jpg",
                     description: courseInfo.description || "No description available.",
-                    category: courseInfo.category || "No category" // 🔹 Fix: Fetch course category
+                    category: courseInfo.category || "No category"
                 });
             }
         }
@@ -97,7 +95,6 @@ async function fetchCompletedCourses(userId) {
     }
 }
 
-// ✅ Render Completed Courses on Profile Page
 function renderCourses(courses) {
     gridContainer.innerHTML = "";
     courses.forEach((course) => {
@@ -109,21 +106,26 @@ function renderCourses(courses) {
             <p>${course.description}</p>
             <p><strong>Category:</strong> ${course.category}</p>
         `;
+
+
         gridContainer.appendChild(courseElement);
+
+        courseElement.addEventListener("click", () => {
+            window.location.href = `vidoes.html?courseId=${course.id}`;
+        });
     });
 }
 
-// ✅ Monitor User Authentication Status
+
 onAuthStateChanged(auth, (user) => {
     if (user) {
         fetchUserProfile(user.uid);
         fetchCompletedCourses(user.uid);
     } else {
-        window.location.href = "login.html"; // Redirect to login if user is not logged in
+        window.location.href = "login.html";
     }
 });
 
-// ✅ Logout Functionality
 logoutButton.addEventListener("click", async() => {
     try {
         await signOut(auth);

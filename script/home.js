@@ -35,9 +35,13 @@ async function fetchCourses() {
             courseCard.innerHTML = `
                 <img src="${course.image}" alt="${course.title}">
                 <h3>${course.title}</h3>
+                
             `;
-
             courseList.appendChild(courseCard);
+            courseCard.addEventListener('click', function() {
+                window.location.href = `vidoes.html?courseId=${docSnap.id}`;
+            });
+
         });
 
     } catch (error) {

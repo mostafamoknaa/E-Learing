@@ -127,6 +127,7 @@ window.viewWishlist = function() {
 
 
 window.removeFromWishlist = function(id) {
+
     let wishlist = getWishlist().filter(item => item.id !== id);
     saveWishlist(wishlist);
     viewWishlist();
@@ -143,6 +144,6 @@ function updateWishlistCount() {
     document.getElementById("wishlist-count").textContent = `(${wishlist.length})`;
 }
 
-localStorage.removeItem("wishlist");
+//localStorage.removeItem("wishlist");
 
 window.onload = fetchCourses;
