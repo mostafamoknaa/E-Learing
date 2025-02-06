@@ -56,6 +56,7 @@ async function fetchCourses() {
                     <td>${course.duration} hrs</td>
                     <td><button class="edit-btn" data-id="${docData.id}">Edit</button></td>
                     <td><button class="delete-btn" data-id="${docData.id}">Delete</button></td>
+                    <td><button class="feedback-btn" data-id="${docData.id}">Feedback</button></td>
                 </tr>
             `;
             tableBody.innerHTML += row;
@@ -63,6 +64,7 @@ async function fetchCourses() {
 
         attachDeleteListeners();
         attachEditListeners();
+        attachFeedbackListeners();
     } catch (error) {
         console.error("Error fetching courses:", error);
     }
@@ -112,6 +114,20 @@ function attachEditListeners() {
         });
     });
 }
+
+
+
+
+function attachFeedbackListeners() {
+    document.querySelectorAll(".feedback-btn").forEach(button => {
+        button.addEventListener("click", async() => {
+            const courseId = button.getAttribute("data-id");
+            window.location.href = `feedback.html?courseId=${courseId}`;
+        });
+
+    });
+}
+
 
 const courseForm = document.getElementById("course-form");
 const categoryDropdown = document.getElementById("course-category");

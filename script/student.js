@@ -2,8 +2,15 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebas
 import {
     getFirestore,
     collection,
-    getDocs
+    getDocs,
+    doc,
+    getDoc
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyCBckLKiCtLIFvXX3SLfyCaszC-vFDL3JA",
@@ -19,14 +26,14 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const studentTableBody = document.getElementById("studentTableBody");
 
-// Function to get all course names
+
 async function getCourseNames() {
     const courseNames = {};
     try {
         const querySnapshot = await getDocs(collection(db, "courses"));
         querySnapshot.forEach((doc) => {
             const course = doc.data();
-            courseNames[doc.id] = course.title || "Unknown Course"; // Store Course ID as key and Title as value
+            courseNames[doc.id] = course.title || "Unknown Course";
         });
     } catch (error) {
         console.error("Error fetching course names:", error);
@@ -34,14 +41,13 @@ async function getCourseNames() {
     return courseNames;
 }
 
-// Function to get all student names
 async function getStudentNames() {
     const studentNames = {};
     try {
         const querySnapshot = await getDocs(collection(db, "student"));
         querySnapshot.forEach((doc) => {
             const student = doc.data();
-            studentNames[student.userId] = student.name || "Unknown Student"; // Store Student ID as key and Name as value
+            studentNames[doc.id] = student.name.trim() || "Unknown Student";
         });
     } catch (error) {
         console.error("Error fetching student names:", error);
@@ -49,16 +55,22 @@ async function getStudentNames() {
     return studentNames;
 }
 
-// Function to load students and their courses
+
 async function loadStudents() {
     try {
-        const courseNames = await getCourseNames();
-        const studentNames = await getStudentNames();
-        const querySnapshot = await getDocs(collection(db, "coursecompleted"));
 
+        const [courseNames, studentNames] = await Promise.all([
+            getCourseNames(),
+            getStudentNames()
+        ]);
+
+
+        const querySnapshot = await getDocs(collection(db, "coursecompleted"));
         studentTableBody.innerHTML = "";
+
         let index = 1;
         const studentCourses = {};
+
 
         querySnapshot.forEach((doc) => {
             const record = doc.data();
@@ -76,16 +88,16 @@ async function loadStudents() {
 
             const courseName = courseNames[courseId] || "Unknown Course";
             if (isFinished) {
-                studentCourses[studentId].completedCourses.push(courseName);
-            } else {
                 studentCourses[studentId].uncompletedCourses.push(courseName);
+            } else {
+
+                studentCourses[studentId].completedCourses.push(courseName);
             }
         });
 
-        // Render student-course data in table
+
         for (const studentId in studentCourses) {
             const { name, completedCourses, uncompletedCourses } = studentCourses[studentId];
-
             const rowSpanCount = Math.max(completedCourses.length, uncompletedCourses.length, 1);
 
             for (let i = 0; i < rowSpanCount; i++) {
@@ -113,5 +125,5 @@ async function loadStudents() {
     }
 }
 
-// Load students on page load
+
 window.addEventListener("DOMContentLoaded", loadStudents);
