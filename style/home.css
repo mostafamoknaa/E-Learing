@@ -1,5 +1,4 @@
 /* General Styles */
-
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -7,12 +6,10 @@ body {
     background-color: #f4f4f4;
 }
 
-
 /* Header */
-
 header {
-    background: gray;
-    color: white;
+    background: #f0f0f0; /* اللون الرمادي الفاتح للهيدر */
+    color: black;
     padding: 15px 20px;
     display: flex;
     justify-content: space-between;
@@ -36,14 +33,12 @@ nav ul li {
 }
 
 nav ul li a {
-    color: white;
+    color: black;
     text-decoration: none;
     font-size: 18px;
 }
 
-
 /* Hero Section */
-
 .hero {
     position: relative;
     color: white;
@@ -78,16 +73,14 @@ nav ul li a {
 }
 
 .hero .btn {
-    background: #0073e6;
+    background: #df4adf; /* اللون البينك */
     color: white;
     padding: 10px 20px;
     text-decoration: none;
     border-radius: 5px;
 }
 
-
 /* Courses Section */
-
 .courses {
     text-align: center;
     padding: 50px 20px;
@@ -136,7 +129,7 @@ nav ul li a {
 }
 
 .course-card .btn {
-    background: #0073e6;
+    background: #df4adf; /* اللون البينك */
     color: white;
     padding: 10px 15px;
     border: none;
@@ -146,9 +139,7 @@ nav ul li a {
     margin-top: 10px;
 }
 
-
 /* About & Contact */
-
 .about,
 .contact {
     text-align: center;
@@ -164,7 +155,7 @@ nav ul li a {
 }
 
 .contact .btn {
-    background: #0073e6;
+    background: #df4adf; /* اللون البينك */
     color: white;
     padding: 10px;
     border: none;
@@ -172,13 +163,12 @@ nav ul li a {
     cursor: pointer;
 }
 
-
 /* Footer */
-
 footer {
-    background: gray;
+    background: #f0f0f0; /* اللون البينك */
     color: white;
     text-align: center;
     padding: 15px 0;
     margin-top: 20px;
 }
+

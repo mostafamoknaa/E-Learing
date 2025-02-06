@@ -5,12 +5,10 @@ body {
     padding: 0;
 }
 
-
 /* Header */
-
 header {
-    background: gray;
-    color: white;
+    background: #f0f0f0; /* اللون الرمادي الفاتح للهيدر */
+    color: black;
     padding: 15px 20px;
     display: flex;
     justify-content: space-between;
@@ -35,7 +33,7 @@ nav ul li {
 }
 
 nav ul li a {
-    color: white;
+    color: black;
     text-decoration: none;
     font-size: 18px;
 }
@@ -57,9 +55,7 @@ nav ul li a {
     margin-right: 15px;
 }
 
-
 /* Course Cards */
-
 .content-box {
     position: relative;
     overflow: hidden;
@@ -102,9 +98,7 @@ nav ul li a {
     margin-top: 10px;
 }
 
-
 /* About & Contact */
-
 .about,
 .contact {
     text-align: center;
@@ -128,12 +122,10 @@ nav ul li a {
     cursor: pointer;
 }
 
-
 /* Wishlist Button */
-
 .enroll-btn,
 .wishlist-btn {
-    background: #ff4081;
+    background: #df4adf;
     color: white;
     padding: 10px 15px;
     border: none;
@@ -151,9 +143,7 @@ nav ul li a {
     background: darkolivegreen;
 }
 
-
 /* Modal Styling */
-
 .modal {
     display: none;
     position: fixed;
@@ -186,20 +176,16 @@ nav ul li a {
     cursor: pointer;
 }
 
-
 /* Footer */
-
 footer {
-    background: gray;
+    background: #f0f0f0;
     color: white;
     text-align: center;
     padding: 15px 0;
     margin-top: 20px;
 }
 
-
 /* Responsive Design */
-
 @media (max-width: 768px) {
     header {
         flex-direction: column;
@@ -216,8 +202,8 @@ footer {
 }
 
 #logout-btn {
-    background-color: darkolivegreen;
-    color: black;
+    background-color: #df4adf; /* نفس اللون الهيدر للـ logout */
+    color: white;
     padding: 10px 15px;
     border: none;
     cursor: pointer;
@@ -225,3 +211,4 @@ footer {
     border-radius: 5px;
     transition: background 0.3s ease-in-out;
 }
+
