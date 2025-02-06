@@ -64,108 +64,18 @@ async function populateCategoryFilter() {
 }
 populateCategoryFilter();
 
-//search
 const searchInput = document.getElementById("search-input");
 const searchButton = document.getElementById("search-button");
 
 searchButton.addEventListener("click", () => {
     const searchTerm = searchInput.value.toLowerCase().trim();
-    Courses(searchTerm);
+    loadCourses();
 });
 
-async function Courses(searchTerm = "") {
-    const coursesContainer = document.getElementById("courses-container");
-    if (!coursesContainer) return;
-
-    coursesContainer.innerHTML = "<p>Loading courses...</p>";
-
-    try {
-        const querySnapshot = await getDocs(collection(db, "courses"));
-        coursesContainer.innerHTML = "";
-
-        const coursePromises = querySnapshot.docs
-            .map(async(doc) => {
-                const course = doc.data();
-
-                // Apply search filter (case-insensitive)
-                if (
-                    searchTerm &&
-                    !course.title.toLowerCase().includes(searchTerm) &&
-                    !course.instructor.toLowerCase().includes(searchTerm)
-                ) {
-                    return ""; // Skip courses that don’t match search
-                }
-
-                let enrollmentStatus = "not enrolled";
-                let enrollmentId = null;
-
-                if (currentUser) {
-                    const enrollmentRef = collection(db, "enrollment");
-                    const q = query(
-                        enrollmentRef,
-                        where("courseId", "==", doc.id),
-                        where("userId", "==", currentUser.uid)
-                    );
-                    const enrollmentSnapshot = await getDocs(q);
-
-                    if (!enrollmentSnapshot.empty) {
-                        const enrollmentData = enrollmentSnapshot.docs[0].data();
-                        enrollmentStatus = enrollmentData.status;
-                        enrollmentId = enrollmentSnapshot.docs[0].id;
-                    }
-                }
-
-                const buttonText =
-                    enrollmentStatus === "approved" ?
-                    "Open Course" :
-                    enrollmentStatus === "pending" ?
-                    "Pending Approval" :
-                    "Enroll";
-
-                return `
-                    <div class="col-md-4">
-                        <div class="content-box">
-                            <img src="${course.image || ''}" alt="${course.title}" onerror="this.src='default-course-image.jpg'">
-                            <div class="content-info">
-                                <h5>${course.title}</h5>
-                                <p><strong>Instructor:</strong> ${course.instructor}</p>
-                                <p><strong>Price:</strong> $${course.price}</p>
-                                <div class="btn-group">
-                                    <button class="enroll-btn" 
-                                        data-id="${doc.id}" 
-                                        data-enrollment-id="${enrollmentId}" 
-                                        ${enrollmentStatus === "pending" ? "disabled" : ""}>
-                                        ${buttonText}
-                                    </button>
-                                    <button class="wishlist-btn" 
-                                        data-id="${doc.id}" 
-                                        data-title="${course.title}" 
-                                        data-image="${course.image || ''}" 
-                                        data-price="${course.price}">
-                                        Add to Wishlist
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-
-        const courseElements = await Promise.all(coursePromises);
-        coursesContainer.innerHTML = courseElements.join("");
-
-        watchEnrollmentStatus();
-        loadWishlistIcons();
-        attachEventListeners();
-    } catch (error) {
-        console.error("Error fetching courses:", error);
-        coursesContainer.innerHTML = "<p>Error loading courses. Please try again.</p>";
-    }
-}
 
 
 
-async function loadCourses(selectedCategory = "all") {
+async function loadCourses() {
     const coursesContainer = document.getElementById("courses-container");
     if (!coursesContainer) return;
 
@@ -173,11 +83,21 @@ async function loadCourses(selectedCategory = "all") {
 
     try {
         let coursesRef = collection(db, "courses");
+        let selectedCategory = statusFilter.value;
+        let searchTerm = searchInput.value.toLowerCase().trim();
+
         let q = selectedCategory !== "all" ? query(coursesRef, where("category", "==", selectedCategory)) : coursesRef;
         const querySnapshot = await getDocs(q);
 
         const coursePromises = querySnapshot.docs.map(async(doc) => {
             const course = doc.data();
+            if (
+                searchTerm &&
+                !course.title.toLowerCase().includes(searchTerm) &&
+                !course.instructor.toLowerCase().includes(searchTerm)
+            ) {
+                return "";
+            }
             let enrollmentStatus = "not enrolled";
             let enrollmentId = null;
 
@@ -326,7 +246,7 @@ function watchEnrollmentStatus() {
 
 function getWishlist() {
 
-    return JSON.parse(localStorage.getItem("wishlist")) || [];
+    return JSON.parse(localStorage.getItem("wishlist")) || []
 }
 
 
@@ -392,8 +312,6 @@ window.viewWishlist = function() {
 
 window.removeFromWishlist = function(id) {
     let wishlist = getWishlist().filter(item => item.id !== id);
-
-
     document.querySelectorAll(`.wishlist-btn[data-id="${id}"]`).forEach(button => {
         button.textContent = "Add to Wishlist";
         button.disabled = false;

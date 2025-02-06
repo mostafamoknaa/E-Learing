@@ -1,4 +1,5 @@
 /* General Styles */
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -6,9 +7,11 @@ body {
     background-color: #f4f4f4;
 }
 
+
 /* Header */
+
 header {
-    background: #f0f0f0; /* اللون الرمادي الفاتح للهيدر */
+    background: #f0f0f0;
     color: black;
     padding: 15px 20px;
     display: flex;
@@ -38,7 +41,20 @@ nav ul li a {
     font-size: 18px;
 }
 
+#logout-btn {
+    background: #df4adf;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    transition: background 0.3s ease-in-out;
+}
+
+
 /* Hero Section */
+
 .hero {
     position: relative;
     color: white;
@@ -73,14 +89,16 @@ nav ul li a {
 }
 
 .hero .btn {
-    background: #df4adf; /* اللون البينك */
+    background: #df4adf;
     color: white;
     padding: 10px 20px;
     text-decoration: none;
     border-radius: 5px;
 }
 
+
 /* Courses Section */
+
 .courses {
     text-align: center;
     padding: 50px 20px;
@@ -129,7 +147,8 @@ nav ul li a {
 }
 
 .course-card .btn {
-    background: #df4adf; /* اللون البينك */
+    background: #df4adf;
+    /* اللون البينك */
     color: white;
     padding: 10px 15px;
     border: none;
@@ -139,7 +158,9 @@ nav ul li a {
     margin-top: 10px;
 }
 
+
 /* About & Contact */
+
 .about,
 .contact {
     text-align: center;
@@ -155,7 +176,8 @@ nav ul li a {
 }
 
 .contact .btn {
-    background: #df4adf; /* اللون البينك */
+    background: #df4adf;
+    /* اللون البينك */
     color: white;
     padding: 10px;
     border: none;
@@ -163,12 +185,13 @@ nav ul li a {
     cursor: pointer;
 }
 
+
 /* Footer */
+
 footer {
-    background: #f0f0f0; /* اللون البينك */
-    color: white;
+    background: #f0f0f0;
+    color: black;
     text-align: center;
     padding: 15px 0;
     margin-top: 20px;
 }
-

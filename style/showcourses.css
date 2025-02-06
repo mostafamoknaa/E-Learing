@@ -103,6 +103,11 @@ button:hover {
     color: black;
 }
 
+.feedback-btn {
+    background-color: #df4adf;
+    color: white;
+}
+
 
 /* Delete Button */
 
@@ -143,7 +148,7 @@ button:hover {
 #save-update {
     width: 50%;
     margin-left: 140px;
-    background-color:#df4adf;
+    background-color: #df4adf;
     color: white;
     padding: 10px;
     margin-top: 10px;
