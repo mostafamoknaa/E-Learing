@@ -58,6 +58,7 @@ async function fetchCompletedCourses(userId) {
             if (courseSnap.exists()) {
                 const courseInfo = courseSnap.data();
                 courses.push({
+                    id: courseId,
                     title: courseInfo.title || "Untitled Course",
                     image: courseInfo.image || "images/default-course.jpg",
                     description: courseInfo.description || "No description available.",
@@ -90,16 +91,34 @@ function renderCourses(courses) {
             <h3>${course.title}</h3>
             <p>${course.description}</p>
             <p><strong>Category:</strong> ${course.category}</p>
+            <button class="course-btn" data-id="${course.id}">View Course</button>
+            <button class="certificate-btn" data-id="${course.id}">Certificate</button>
         `;
         gridContainer.appendChild(courseElement);
     });
+
+    document.querySelectorAll(".course-btn").forEach((button) => {
+        button.addEventListener("click", (e) => {
+            const courseId = e.target.dataset.id;
+            window.location.href = `vidoes.html?courseId=${courseId}`;
+        });
+    });
+
+    document.querySelectorAll(".certificate-btn").forEach((button) => {
+        button.addEventListener("click", (e) => {
+            const courseId = e.target.dataset.id;
+            window.location.href = `certificate.html?courseId=${courseId}`;
+        });
+    });
 }
+
+
 
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
         fetchCompletedCourses(user.uid);
     } else {
-        gridContainer.innerHTML = "<p>🔒 Please log in to see your course history.</p>";
+        gridContainer.innerHTML = "<p>Please log in to see your course history.</p>";
     }
 });

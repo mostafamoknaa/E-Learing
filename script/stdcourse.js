@@ -135,6 +135,7 @@ async function loadCourses() {
                                     ${enrollmentStatus === "pending" ? "disabled" : ""}>
                                     ${buttonText}
                                 </button>
+                                <button class="buy-course-btn" data-id="${doc.id}">Buy Course</button>
                                 <button class="wishlist-btn" 
                                     data-id="${doc.id}" 
                                     data-title="${course.title}" 
@@ -152,6 +153,12 @@ async function loadCourses() {
         const courseElements = await Promise.all(coursePromises);
         coursesContainer.innerHTML = courseElements.join('');
 
+        document.querySelectorAll(".buy-course-btn").forEach((button) => {
+            button.addEventListener("click", (e) => {
+                const courseId = e.target.dataset.id;
+                window.location.href = `pay.html?courseId=${courseId}`;
+            });
+        });
         watchEnrollmentStatus();
         loadWishlistIcons();
         attachEventListeners();

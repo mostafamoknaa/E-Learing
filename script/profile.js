@@ -10,12 +10,12 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
 
-
+// ✅ Correct Firebase Configuration
 const firebaseConfig = {
     apiKey: "AIzaSyCBckLKiCtLIFvXX3SLfyCaszC-vFDL3JA",
     authDomain: "ecommerce-9d94f.firebaseapp.com",
     projectId: "ecommerce-9d94f",
-    storageBucket: "ecommerce-9d94f.firebasestorage.app",
+    storageBucket: "ecommerce-9d94f.appspot.com",
     messagingSenderId: "444404014366",
     appId: "1:444404014366:web:d1e5a5f10e5b90ca95fd0f",
     measurementId: "G-V7Q9HY61C5"
@@ -28,7 +28,6 @@ const auth = getAuth(app);
 
 
 const userName = document.getElementById("user-name");
-const userEmail = document.getElementById("user-email");
 const userAvatar = document.getElementById("user-avatar");
 const gridContainer = document.querySelector(".grid");
 const logoutButton = document.getElementById("logout-button");
@@ -72,7 +71,6 @@ async function fetchCompletedCourses(userId) {
             const courseData = docSnap.data();
             const courseId = courseData.courseId;
 
-
             const courseRef = doc(db, "courses", courseId);
             const courseSnap = await getDoc(courseRef);
 
@@ -95,6 +93,7 @@ async function fetchCompletedCourses(userId) {
     }
 }
 
+
 function renderCourses(courses) {
     gridContainer.innerHTML = "";
     courses.forEach((course) => {
@@ -105,13 +104,25 @@ function renderCourses(courses) {
             <h3>${course.title}</h3>
             <p>${course.description}</p>
             <p><strong>Category:</strong> ${course.category}</p>
+            <button class="course-btn" data-id="${course.id}">View Course</button>
+            <button class="certificate-btn" data-id="${course.id}">Certificate</button>
         `;
 
-
         gridContainer.appendChild(courseElement);
+    });
 
-        courseElement.addEventListener("click", () => {
-            window.location.href = `vidoes.html?courseId=${course.id}`;
+
+    document.querySelectorAll(".course-btn").forEach((button) => {
+        button.addEventListener("click", (e) => {
+            const courseId = e.target.dataset.id;
+            window.location.href = `vidoes.html?courseId=${courseId}`;
+        });
+    });
+
+    document.querySelectorAll(".certificate-btn").forEach((button) => {
+        button.addEventListener("click", (e) => {
+            const courseId = e.target.dataset.id;
+            window.location.href = `certificate.html?courseId=${courseId}`;
         });
     });
 }
@@ -123,14 +134,5 @@ onAuthStateChanged(auth, (user) => {
         fetchCompletedCourses(user.uid);
     } else {
         window.location.href = "login.html";
-    }
-});
-
-logoutButton.addEventListener("click", async() => {
-    try {
-        await signOut(auth);
-        window.location.href = "login.html";
-    } catch (error) {
-        console.error("Error logging out:", error);
     }
 });

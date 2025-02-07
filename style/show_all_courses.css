@@ -136,6 +136,7 @@ nav ul li a {
     border-color: #df4adf;
 }
 
+.buy-course-btn,
 .search-btn,
 .enroll-btn,
 .wishlist-btn {
@@ -155,6 +156,10 @@ nav ul li a {
 
 .enroll-btn:hover {
     background: darkolivegreen;
+}
+
+.buy-course-btn:hover {
+    background: #0056b3;
 }
 
 

@@ -1,0 +1,72 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.certificate {
+    width: 800px;
+    height: 400px;
+    background: white;
+    padding: 40px;
+    text-align: center;
+    border: 10px solid #1e3a8a;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.certificate h1 {
+    margin-top: 100px;
+    font-size: 40px;
+    margin-bottom: 20px;
+    color: #1e3a8a;
+    text-transform: uppercase;
+    font-family: 'Georgia', serif;
+}
+
+.certificate p {
+    font-size: 18px;
+    margin: 10px 0;
+    font-family: 'Arial', sans-serif;
+}
+
+.certificate .name {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 20px 0;
+    color: #333;
+}
+
+.certificate .course {
+    font-size: 24px;
+    font-weight: bold;
+    color: #555;
+}
+
+.signature {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 50px;
+}
+
+.signature div {
+    text-align: center;
+}
+
+.signature p {
+    margin: 5px 0;
+}
+
+.signature-line {
+    width: 200px;
+    height: 1px;
+    background: black;
+    margin: 10px auto;
+}
+
+.date {
+    margin-top: 30px;
+    font-size: 16px;
+    color: #555;
+}
