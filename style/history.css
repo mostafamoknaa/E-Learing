@@ -92,3 +92,20 @@ body {
     transform: scale(1.05);
     transition: transform 0.3s ease-in-out;
 }
+
+.certificate-btn,
+.course-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.certificate-btn:hover,
+.course-btn:hover {
+    background-color: #0056b3;
+}

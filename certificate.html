@@ -10,30 +10,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer"
     />
     <link rel="icon" href="images/e-learning.jpeg" type="image/x-icon" />
-    <title>User Profile</title>
-    <link rel="stylesheet" href="style/profile.css">
+    <link rel="stylesheet" href="style/certificate.css">
+    <title>Certificate</title>
 </head>
 
 <body>
-    <div class="profile-container">
-        <h1>User Profile</h1>
-        <div class="profile-card">
-            <img id="user-avatar" src="images/Avatar.png" alt="User Avatar">
-            <h2 id="user-name">Loading...</h2>
-        </div>
-
-
-        <div class="container">
-            <h1 class="title">
-                <h2>Completed Courses</h2>
-            </h1>
-            <div class="grid">
-            </div>
-
-        </div>
+    <div class="certificate">
+        <h1>Certificate of Completion</h1>
+        <p>This is to certify that</p>
+        <p class="name" id="studentName"></p>
+        <p>has successfully completed the course</p>
+        <p class="course" id="courseName"></p>
     </div>
-
-    <script type="module" src="script/profile.js"></script>
+    <script type="module" src="script/certificate.js"></script>
 </body>
 
 </html>
