@@ -1,0 +1,66 @@
+body {
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.wishlist-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.wishlist-item img {
+    max-width: 100px;
+    height: auto;
+    margin-right: 10px;
+}
+
+.wishlist-item h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.wishlist-item p {
+    margin: 0;
+    font-size: 14px;
+    color: #777;
+}
+
+.wishlist-item button {
+    background-color: #ff5733;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.wishlist-item button:hover {
+    background-color: #e64a2e;
+}
+
+.wishlist-item button:focus {
+    outline: none;
+}
+
+.wishlist-item button:active {
+    background-color: #cc3d20;
+}

@@ -4,9 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout</title>
-    <script src="https://www.paypal.com/sdk/js?client-id=AUQBr2c694mNflHfxEq-RulfH47xiMwYy4ur4o7lKubCqHxGJPaJZRbIJvTmcVtsZYITI7ms6F7H0sJR&currency=USD"></script>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+    <link rel="icon" href="images/e-learning.jpeg" type="image/x-icon" />
+    <title>E-Learning Site</title>
     <link rel="stylesheet" href="style/checkout.css">
+    <script src="https://js.stripe.com/v3/"></script>
+
 </head>
 
 <body>
@@ -17,7 +24,19 @@
         <p id="course-price"></p>
         <div id="paypal-button-container"></div>
     </div>
+    <div>
+        <h2>Stripe Payment</h2>
+        <p>Enter your payment details below:</p>
 
+        <form id="payment-form">
+            <div id="card-element">
+
+            </div>
+            <br>
+            <button id="submit">Pay with Card</button>
+            <p id="payment-message"></p>
+        </form>
+    </div>
     <script type="module" src="script/checkout.js"></script>
 
 </body>

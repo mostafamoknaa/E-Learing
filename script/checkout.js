@@ -21,9 +21,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-const urlParams = new URLSearchParams(window.location.search);
-const courseId = urlParams.get("courseId");
-
 onAuthStateChanged(auth, (user) => {
     if (user) {
         loadPayment(courseId);
@@ -31,6 +28,11 @@ onAuthStateChanged(auth, (user) => {
         window.location.href = "login.html";
     }
 });
+
+
+
+const urlParams = new URLSearchParams(window.location.search);
+const courseId = urlParams.get("courseId");
 
 async function loadPayment(courseId) {
     try {
@@ -50,33 +52,42 @@ async function loadPayment(courseId) {
         const courseTitle = courseData.title || "Untitled Course";
         const coursePrice = courseData.price || 0;
 
-        titleElement.textContent = courseTitle;
-        priceElement.textContent = `Price: $${coursePrice}`;
-
-        if (!paypalContainer.hasChildNodes()) {
-            paypal.Buttons({
-                createOrder: (data, actions) => {
-                    return actions.order.create({
-                        purchase_units: [{
-                            amount: { value: coursePrice.toFixed(2) },
-                            description: courseTitle
-                        }]
-                    });
-                },
-                onApprove: async(data, actions) => {
-                    const order = await actions.order.capture();
-                    console.log("Order Details:", order);
-
-                    alert("Payment Successful!");
-                    window.location.href = `vidoes.html?courseId=${courseId}`;
-                },
-                onError: (err) => {
-                    console.error("Payment Error:", err);
-                    alert("Payment failed. Please try again.");
-                }
-            }).render("#paypal-button-container");
-        }
+        titleElement.textContent = `Course : ${courseTitle}`;
+        priceElement.textContent = `Price : $${coursePrice}`;
     } catch (error) {
         console.error("Error fetching course details:", error);
     }
 }
+
+const STRIPE_PUBLIC_KEY = "pk_test_51Oa1apC2Y3Ne3oUhz8quAdzU0O1aAgoTSP0wwiEMbUqZDd0knNgOnMSyU3Us4s05QjCdwvqmxA2EDGAT3Mj9a3kj00BKiR5q83";
+
+
+const stripe = Stripe(STRIPE_PUBLIC_KEY);
+const elements = stripe.elements();
+
+
+const card = elements.create("card");
+card.mount("#card-element");
+
+
+const form = document.getElementById("payment-form");
+const paymentMessage = document.getElementById("payment-message");
+
+form.addEventListener("submit", async(event) => {
+    event.preventDefault();
+    paymentMessage.textContent = "Processing payment...";
+    const {
+        paymentMethod,
+        error
+    } = await stripe.createPaymentMethod({
+        type: "card",
+        card: card,
+    });
+
+    if (error) {
+        paymentMessage.textContent = "Error: " + error.message;
+    } else {
+        paymentMessage.textContent = "✅ Payment Successful!";
+        window.location.href = `vidoes.html?courseId=${courseId}`;
+    }
+});
