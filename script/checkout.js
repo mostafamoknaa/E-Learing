@@ -53,28 +53,42 @@ async function loadPayment(courseId) {
         titleElement.textContent = courseTitle;
         priceElement.textContent = `Price: $${coursePrice}`;
 
-        if (!paypalContainer.hasChildNodes()) {
-            paypal.Buttons({
-                createOrder: (data, actions) => {
-                    return actions.order.create({
-                        purchase_units: [{
-                            amount: { value: coursePrice.toFixed(2) },
-                            description: courseTitle
-                        }]
-                    });
-                },
-                onApprove: async(data, actions) => {
-                    const order = await actions.order.capture();
-                    console.log("Order Details:", order);
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                const amount = document.getElementById('amount').value;
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: { value: coursePrice },
+                        description: courseTitle
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    const transaction = details.purchase_units[0].payments.captures[0];
+                    alert('Transaction completed by ' + details.payer.name.given_name);
+                    simulatePaymentAPI(details);
+                    alert("Payment done");
+                });
+            }
+        }).render('#paypal-button-container');
 
-                    alert("Payment Successful!");
-                    window.location.href = `vidoes.html?courseId=${courseId}`;
-                },
-                onError: (err) => {
-                    console.error("Payment Error:", err);
-                    alert("Payment failed. Please try again.");
-                }
-            }).render("#paypal-button-container");
+        // Simulate Payment API Request
+        function simulatePaymentAPI(paymentDetails) {
+            fetch('https://jsonplaceholder.typicode.com/posts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        transactionId: paymentDetails.id,
+                        payerName: paymentDetails.payer.name.given_name,
+                        amount: paymentDetails.purchase_units[0].amount.value
+                    })
+                })
+                .then(response => response.json())
+                .then(data => console.log('Payment Simulation Successful:', data))
+                .catch(error => console.error('Error:', error));
         }
     } catch (error) {
         console.error("Error fetching course details:", error);

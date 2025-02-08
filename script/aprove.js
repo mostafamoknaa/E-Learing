@@ -43,7 +43,7 @@ let currentUser = null;
 
 onAuthStateChanged(auth, (user) => {
     currentUser = user;
-    if (user) loadCourses();
+    if (user) fetchEnrollments();
 });
 
 
@@ -55,7 +55,7 @@ async function fetchEnrollments() {
     const tableBody = registrationTable.querySelector("tbody");
     tableBody.innerHTML = "";
 
-    const selectedStatus = statusFilter.value;
+    const selectedStatus = statusFilter.value.trim();
 
     try {
         const snapshot = await getDocs(collection(db, "enrollment"));
@@ -78,6 +78,7 @@ async function fetchEnrollments() {
                     <td>
                         <button class="approve-btn" data-id="${requestId}" data-student="${request.studentId}" data-course="${request.courseId}">Approve</button>
                         <button class="reject-btn" data-id="${requestId}" data-student="${request.studentId}" data-course="${request.courseId}">Reject</button>
+                        
                     </td>
                 </tr>
             `;
@@ -89,6 +90,7 @@ async function fetchEnrollments() {
         console.error("Error fetching enrollments:", error);
     }
 }
+
 
 
 async function getStudentName(studentId) {
@@ -184,7 +186,11 @@ function attachEventListeners() {
             await rejectRequest(requestId, studentId, courseId);
         });
     });
+
 }
+
+
+
 
 statusFilter.addEventListener("change", fetchEnrollments);
 
