@@ -21,9 +21,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-const urlParams = new URLSearchParams(window.location.search);
-const courseId = urlParams.get("courseId");
-
 onAuthStateChanged(auth, (user) => {
     if (user) {
         loadPayment(courseId);
@@ -31,6 +28,11 @@ onAuthStateChanged(auth, (user) => {
         window.location.href = "login.html";
     }
 });
+
+
+
+const urlParams = new URLSearchParams(window.location.search);
+const courseId = urlParams.get("courseId");
 
 async function loadPayment(courseId) {
     try {
@@ -50,47 +52,42 @@ async function loadPayment(courseId) {
         const courseTitle = courseData.title || "Untitled Course";
         const coursePrice = courseData.price || 0;
 
-        titleElement.textContent = courseTitle;
-        priceElement.textContent = `Price: $${coursePrice}`;
-
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                const amount = document.getElementById('amount').value;
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: { value: coursePrice },
-                        description: courseTitle
-                    }]
-                });
-            },
-            onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    const transaction = details.purchase_units[0].payments.captures[0];
-                    alert('Transaction completed by ' + details.payer.name.given_name);
-                    simulatePaymentAPI(details);
-                    alert("Payment done");
-                });
-            }
-        }).render('#paypal-button-container');
-
-        // Simulate Payment API Request
-        function simulatePaymentAPI(paymentDetails) {
-            fetch('https://jsonplaceholder.typicode.com/posts', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        transactionId: paymentDetails.id,
-                        payerName: paymentDetails.payer.name.given_name,
-                        amount: paymentDetails.purchase_units[0].amount.value
-                    })
-                })
-                .then(response => response.json())
-                .then(data => console.log('Payment Simulation Successful:', data))
-                .catch(error => console.error('Error:', error));
-        }
+        titleElement.textContent = `Course : ${courseTitle}`;
+        priceElement.textContent = `Price : $${coursePrice}`;
     } catch (error) {
         console.error("Error fetching course details:", error);
     }
 }
+
+const STRIPE_PUBLIC_KEY = "pk_test_51Oa1apC2Y3Ne3oUhz8quAdzU0O1aAgoTSP0wwiEMbUqZDd0knNgOnMSyU3Us4s05QjCdwvqmxA2EDGAT3Mj9a3kj00BKiR5q83";
+
+
+const stripe = Stripe(STRIPE_PUBLIC_KEY);
+const elements = stripe.elements();
+
+
+const card = elements.create("card");
+card.mount("#card-element");
+
+
+const form = document.getElementById("payment-form");
+const paymentMessage = document.getElementById("payment-message");
+
+form.addEventListener("submit", async(event) => {
+    event.preventDefault();
+    paymentMessage.textContent = "Processing payment...";
+    const {
+        paymentMethod,
+        error
+    } = await stripe.createPaymentMethod({
+        type: "card",
+        card: card,
+    });
+
+    if (error) {
+        paymentMessage.textContent = "Error: " + error.message;
+    } else {
+        paymentMessage.textContent = "✅ Payment Successful!";
+        window.location.href = `vidoes.html?courseId=${courseId}`;
+    }
+});

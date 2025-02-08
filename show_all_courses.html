@@ -30,25 +30,22 @@
 
                 <li><a href="showHistory.html">History</a></li>
                 <li><a href="profile.html">Profile</a></li>
+                <li><a href="wishlist.html">Wishlist</a></li>
                 <li><button id="logout-btn" onclick="logout()">Log out</button></li>
             </ul>
         </nav>
     </header>
-    <div class="container">
-        <button onclick="viewWishlist()" class="wishlist-btn">
-            View Wishlist <span id="wishlist-count">(0)</span>
-        </button>
 
-        <label for="status-filter">Filter by Category:</label>
-        <select id="status-filter">
+    <label for="status-filter">Filter by Category:</label>
+    <select id="status-filter">
                 <option value="all">All</option>
             </select>
 
-        <div style="float:right ;">
-            <label for="search">Search:</label>
-            <input type="text" id="search-input" placeholder="Search...">
-            <button onclick="searchCourses()" id="search-button" class="search-btn">Search</button>
-        </div>
+    <div style="float:right ;">
+        <label for="search">Search:</label>
+        <input type="text" id="search-input" placeholder="Search...">
+        <button onclick="searchCourses()" id="search-button" class="search-btn">Search</button>
+    </div>
     </div>
 
 
