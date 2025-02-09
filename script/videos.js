@@ -1,32 +1,19 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
 import {
-    getFirestore,
-    doc,
+    db,
+    auth,
+    onAuthStateChanged,
     onSnapshot,
     addDoc,
-    collection,
+    getDocs,
     query,
     where,
-    getDocs,
-    updateDoc
-} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyCBckLKiCtLIFvXX3SLfyCaszC-vFDL3JA",
-    authDomain: "ecommerce-9d94f.firebaseapp.com",
-    projectId: "ecommerce-9d94f",
-    storageBucket: "ecommerce-9d94f.appspot.com",
-    messagingSenderId: "444404014366",
-    appId: "1:444404014366:web:d1e5a5f10e5b90ca95fd0f",
-    measurementId: "G-V7Q9HY61C5"
-};
-
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const db = getFirestore(app);
-const auth = getAuth(app);
+    collection,
+    getDoc,
+    doc,
+    updateDoc,
+    deleteDoc,
+    serverTimestamp
+} from "./module.js";
 
 let currentUser = null;
 onAuthStateChanged(auth, (user) => {
@@ -118,10 +105,10 @@ async function loadCourseContent() {
                         console.log("Course completion recorded!");
                     }
 
-                    // Disable the checkbox after it is checked
+
                     if (this.checked) {
                         this.disabled = true;
-                        // Update the label text
+
                         label.textContent = 'Course Completed!';
                     }
 
@@ -130,7 +117,7 @@ async function loadCourseContent() {
                 }
             });
 
-            // Load the checkbox state from Firestore
+
             async function loadCheckboxState() {
                 if (!currentUser) return;
 
@@ -147,10 +134,10 @@ async function loadCourseContent() {
                         const docData = querySnapshot.docs[0].data();
                         const isCompleted = docData.isCompleted;
 
-                        // Set the checkbox state based on Firestore data
+
                         checkbox.checked = isCompleted;
 
-                        // Disable the checkbox and update the label if the course is completed
+
                         if (isCompleted) {
                             checkbox.disabled = true;
                             label.textContent = 'Course Completed!';
@@ -161,7 +148,7 @@ async function loadCourseContent() {
                 }
             }
             loadCheckboxState();
-            // Add feedback and rating functionality
+
 
 
             const feedbackText = document.getElementById("feedbackText");
@@ -171,7 +158,7 @@ async function loadCourseContent() {
 
             let selectedRating = 0;
 
-            // Star rating logic
+
             stars.forEach(star => {
                 star.addEventListener("click", () => {
                     selectedRating = parseInt(star.getAttribute("data-value"));
@@ -221,12 +208,12 @@ async function loadCourseContent() {
             let button = document.getElementById("goBackButton");
             button.textContent = "GO BACK";
             button.addEventListener("click", function() {
-                window.location.href = "index.html";
+                window.location.href = "show_all_courses.html";
             });
 
         } else {
             alert("Course not found!");
-            window.location.href = "index.html";
+            window.location.href = "show_all_courses.html";
         }
 
         document.getElementById("showFeedback").addEventListener("click", function() {

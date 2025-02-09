@@ -1,27 +1,19 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
 import {
-    getFirestore,
-    collection,
+    db,
+    auth,
+    onAuthStateChanged,
+    onSnapshot,
+    addDoc,
     getDocs,
     query,
     where,
+    collection,
+    getDoc,
     doc,
-    getDoc
-} from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
-
-
-const firebaseConfig = {
-    apiKey: "AIzaSyCBckLKiCtLIFvXX3SLfyCaszC-vFDL3JA",
-    authDomain: "ecommerce-9d94f.firebaseapp.com",
-    projectId: "ecommerce-9d94f",
-    storageBucket: "ecommerce-9d94f.firebasestorage.app",
-    messagingSenderId: "444404014366",
-    appId: "1:444404014366:web:d1e5a5f10e5b90ca95fd0f",
-    measurementId: "G-V7Q9HY61C5"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+    updateDoc,
+    deleteDoc,
+    serverTimestamp
+} from "./module.js";
 
 const urlParams = new URLSearchParams(window.location.search);
 const courseId = urlParams.get("courseId");
