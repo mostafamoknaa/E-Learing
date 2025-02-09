@@ -99,6 +99,7 @@ function attachEditListeners() {
                 document.getElementById("course-description").value = course.description;
                 document.getElementById("course-price").value = course.price;
                 document.getElementById("course-duration").value = course.duration;
+                document.getElementById("course-video").value = course.videoUrl;
             }
         });
     });
@@ -160,6 +161,7 @@ document.getElementById("save-update").addEventListener("click", async() => {
         description: document.getElementById("course-description").value,
         price: parseFloat(document.getElementById("course-price").value),
         duration: parseInt(document.getElementById("course-duration").value),
+        videoUrl: document.getElementById("course-video").value,
     };
 
     try {

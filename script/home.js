@@ -38,9 +38,7 @@ async function fetchCourses() {
                 
             `;
             courseList.appendChild(courseCard);
-            courseCard.addEventListener('click', function() {
-                window.location.href = `vidoes.html?courseId=${docSnap.id}`;
-            });
+            courseCard.addEventListener('click', function() {});
 
         });
 
