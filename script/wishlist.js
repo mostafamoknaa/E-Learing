@@ -12,8 +12,8 @@ import {
     doc,
     updateDoc,
     deleteDoc,
-    serverTimestamp
 } from "./module.js";
+
 
 let currentUser = null;
 
@@ -34,24 +34,57 @@ function saveWishlist(wishlist) {
     localStorage.setItem("wishlist", JSON.stringify(wishlist));
 }
 
-function loadWishlist() {
+async function loadWishlist() {
     const wishlist = getWishlist();
     const wishlistContainer = document.getElementById("courses-container");
     if (!wishlistContainer) return;
 
-    wishlistContainer.innerHTML = wishlist.length === 0 ?
-        "<p>No items in wishlist.</p>" :
-        wishlist.map(item => `
+    const coursesRef = collection(db, "courses");
+    const querySnapshot = await getDocs(coursesRef);
+
+
+    for (const doc of querySnapshot.docs) {
+        const course = doc.data();
+        if (wishlist.some(item => item.id === doc.id)) {
+            let enrollmentStatus = "not enrolled";
+            let enrollmentId = null;
+
+            if (currentUser) {
+                const enrollmentRef = collection(db, "enrollment");
+                const q = query(enrollmentRef, where("courseId", "==", doc.id), where("userId", "==", currentUser.uid));
+                const enrollmentSnapshot = await getDocs(q);
+
+                if (!enrollmentSnapshot.empty) {
+                    const enrollmentData = enrollmentSnapshot.docs[0].data();
+                    enrollmentStatus = enrollmentData.status;
+                    enrollmentId = enrollmentSnapshot.docs[0].id;
+                }
+            }
+
+            const buttonText = enrollmentStatus === "approved" ? "Open Course" :
+                enrollmentStatus === "pending" ? "Pending Approval" : "Enroll";
+
+
+            wishlistContainer.innerHTML = wishlist.length === 0 ?
+                "<p>No items in wishlist.</p>" :
+                wishlist.map(item => `
             <div class="wishlist-item">
                 <img src="${item.image}" width="100">
                 <p>${item.title} - $${item.price}</p>
                 <button class="wishlist-btn" data-id="${item.id}">Remove</button>
-                <button class="enroll-btn" data-id="${item.id}">Enroll</button>
+                <button class="enroll-btn" 
+                    data-id="${doc.id}" 
+                    data-enrollment-id="${enrollmentId}" 
+                    ${enrollmentStatus === "pending" ? "disabled" : ""}>
+                    ${buttonText}
+                </button>
             </div>
         `).join("");
 
-    attachEventListeners();
-    watchEnrollmentStatus();
+            attachEventListeners();
+            watchEnrollmentStatus();
+        }
+    }
 }
 
 
@@ -63,9 +96,7 @@ function attachEventListeners() {
     });
 
     document.querySelectorAll(".enroll-btn").forEach(button => {
-        button.addEventListener("click", (event) => {
-            handleEnrollment(event.target.getAttribute("data-id"));
-        });
+        button.addEventListener("click", handleEnrollment);
     });
 }
 
@@ -97,21 +128,14 @@ function watchEnrollmentStatus() {
         });
     });
 }
-
-async function handleEnrollment(courseId) {
+async function handleEnrollment(event) {
     if (!currentUser) {
         alert("Please log in to enroll in a course.");
         return;
     }
 
-    const button = document.querySelector(`.enroll-btn[data-id="${courseId}"]`);
-    if (!button) return;
-
-
-    // if (["Open Course", "Pending Approval", "Enrolling..."].includes(button.innerText)) return;
-
-    button.innerText = "Enrolling...";
-    button.disabled = true;
+    const button = event.target;
+    const courseId = button.getAttribute("data-id");
 
     try {
         const enrollmentRef = collection(db, "enrollment");
@@ -120,32 +144,32 @@ async function handleEnrollment(courseId) {
 
         if (!enrollmentSnapshot.empty) {
             const enrollmentData = enrollmentSnapshot.docs[0].data();
-
             if (enrollmentData.status === "approved") {
                 window.location.href = `videos.html?courseId=${courseId}`;
             } else {
-                button.innerText = "Pending Approval";
+                button.textContent = "Pending Approval";
+                button.disabled = true;
             }
         } else {
+            console.log("Adding enrollment:", { courseId, userId: currentUser.uid });
+
             await addDoc(enrollmentRef, {
                 courseId: courseId,
                 userId: currentUser.uid,
                 status: "pending",
-
             });
 
             alert("Enrollment request submitted. Waiting for approval.");
-            button.innerText = "Pending Approval";
+            button.textContent = "Pending Approval";
+            button.disabled = true;
         }
-
-        button.disabled = true;
     } catch (error) {
         console.error("Error enrolling in course:", error);
         alert("An error occurred while enrolling. Please try again.");
-        button.innerText = "Enroll";
-        button.disabled = false;
     }
 }
+
+
 
 
 

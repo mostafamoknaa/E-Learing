@@ -132,7 +132,7 @@ iframe:hover {
 }
 
 #submitFeedback {
-    background: #3498db;
+    background: #ff4081;
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -143,12 +143,12 @@ iframe:hover {
 }
 
 #submitFeedback:hover {
-    background: #2980b9;
+    background: #a11141;
     transform: translateY(-2px);
 }
 
 button {
-    background: #2ecc71;
+    background: #ff4081;
     color: #fff;
     border: none;
     margin-top: 30px;
@@ -160,7 +160,7 @@ button {
 }
 
 button:hover {
-    background: #27ae60;
+    background: #a11141;
     transform: translateY(-2px);
 }
 
