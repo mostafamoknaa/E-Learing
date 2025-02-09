@@ -1,28 +1,19 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
 import {
-    getFirestore,
-    collection,
+    db,
+    auth,
+    onAuthStateChanged,
+    onSnapshot,
+    addDoc,
     getDocs,
     query,
     where,
-    addDoc,
-    onSnapshot
-} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyCBckLKiCtLIFvXX3SLfyCaszC-vFDL3JA",
-    authDomain: "ecommerce-9d94f.firebaseapp.com",
-    projectId: "ecommerce-9d94f",
-    storageBucket: "ecommerce-9d94f.appspot.com",
-    messagingSenderId: "444404014366",
-    appId: "1:444404014366:web:d1e5a5f10e5b90ca95fd0f",
-    measurementId: "G-V7Q9HY61C5"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+    collection,
+    getDoc,
+    doc,
+    updateDoc,
+    deleteDoc,
+    serverTimestamp
+} from "./module.js";
 
 let currentUser = null;
 
@@ -117,6 +108,20 @@ async function loadCourses() {
                     enrollmentId = enrollmentSnapshot.docs[0].id;
                 }
             }
+            let isPurchased = false;
+
+            if (currentUser) {
+                const purchaseRef = collection(db, "purchases");
+                const purchaseQuery = query(purchaseRef, where("courseId", "==", doc.id), where("userId", "==", currentUser.uid));
+                const purchaseSnapshot = await getDocs(purchaseQuery);
+
+                if (!purchaseSnapshot.empty) {
+                    isPurchased = true;
+                }
+            }
+
+            const buyButtonText = isPurchased ? "View Course" : "Buy Course";
+            const buyButtonDisabled = isPurchased ? "disabled" : "";
 
             const buttonText = enrollmentStatus === "approved" ? "Open Course" :
                 enrollmentStatus === "pending" ? "Pending Approval" : "Enroll";
@@ -136,7 +141,9 @@ async function loadCourses() {
                                     ${enrollmentStatus === "pending" ? "disabled" : ""}>
                                     ${buttonText}
                                 </button>
-                                 <button class="buy-course-btn" data-id="${doc.id}">Buy Course</button>
+                                <button class="buy-course-btn" data-id="${doc.id}">
+                                    ${buyButtonText}
+                                </button>
                                 <button class="wishlist-btn" 
                                     data-id="${doc.id}" 
                                     data-title="${course.title}" 
@@ -173,11 +180,17 @@ function attachEventListeners() {
         }
     });
     document.querySelectorAll(".buy-course-btn").forEach(button => {
-        button.addEventListener("click", (e) => {
+        button.addEventListener("click", async(e) => {
             const courseId = e.target.dataset.id;
-            window.location.href = `pay.html?courseId=${courseId}`;
+
+            if (e.target.textContent.trim() === "View Course") {
+                window.location.href = `vidoes.html?courseId=${courseId}`;
+            } else {
+                window.location.href = `pay.html?courseId=${courseId}`;
+            }
         });
     });
+
 }
 
 
@@ -199,7 +212,7 @@ async function handleEnrollment(event) {
         if (!enrollmentSnapshot.empty) {
             const enrollmentData = enrollmentSnapshot.docs[0].data();
             if (enrollmentData.status === "approved") {
-                window.location.href = `videos.html?courseId=${courseId}`;
+                window.location.href = `vidoes.html?courseId=${courseId}`;
             } else {
                 button.textContent = "Pending Approval";
                 button.disabled = true;
@@ -251,6 +264,7 @@ function watchEnrollmentStatus() {
         });
     });
 }
+
 
 
 

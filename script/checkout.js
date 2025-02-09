@@ -1,25 +1,19 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
 import {
-    getFirestore,
+    db,
+    auth,
+    onAuthStateChanged,
+    onSnapshot,
+    addDoc,
+    getDocs,
+    query,
+    where,
+    collection,
+    getDoc,
     doc,
-    getDoc
-} from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
-
-
-const firebaseConfig = {
-    apiKey: "AIzaSyCBckLKiCtLIFvXX3SLfyCaszC-vFDL3JA",
-    authDomain: "ecommerce-9d94f.firebaseapp.com",
-    projectId: "ecommerce-9d94f",
-    storageBucket: "ecommerce-9d94f.firebasestorage.app",
-    messagingSenderId: "444404014366",
-    appId: "1:444404014366:web:d1e5a5f10e5b90ca95fd0f",
-    measurementId: "G-V7Q9HY61C5"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+    updateDoc,
+    deleteDoc,
+    serverTimestamp
+} from "./module.js";
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -88,6 +82,24 @@ form.addEventListener("submit", async(event) => {
         paymentMessage.textContent = "Error: " + error.message;
     } else {
         paymentMessage.textContent = "✅ Payment Successful!";
+        await savePurchase(auth.currentUser.uid, courseId);
         window.location.href = `vidoes.html?courseId=${courseId}`;
     }
 });
+
+async function savePurchase(userId, courseId) {
+    const purchaseRef = collection(db, "purchases");
+    await addDoc(purchaseRef, {
+        userId,
+        courseId,
+    });
+
+    const button = document.querySelector(`.buy-course-btn[data-id="${courseId}"]`);
+    if (button) {
+        button.textContent = "View Course";
+        button.disabled = false;
+        button.addEventListener("click", () => {
+            window.location.href = `vidoes.html?courseId=${courseId}`;
+        });
+    }
+}

@@ -2,11 +2,16 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebas
 import {
     getFirestore,
     collection,
+    onSnapshot,
     getDocs,
+    addDoc,
     query,
     where,
-    addDoc,
-    onSnapshot
+    doc,
+    getDoc,
+    updateDoc,
+    deleteDoc,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
 
@@ -24,11 +29,19 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-let currentUser = null;
-
-onAuthStateChanged(auth, (user) => {
-    currentUser = user;
-    if (user) {
-        loadCourses();
-    }
-});
+export {
+    db,
+    auth,
+    onAuthStateChanged,
+    onSnapshot,
+    addDoc,
+    getDocs,
+    query,
+    where,
+    collection,
+    getDoc,
+    doc,
+    updateDoc,
+    deleteDoc,
+    serverTimestamp,
+};
