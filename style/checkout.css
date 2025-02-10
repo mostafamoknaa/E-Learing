@@ -4,6 +4,42 @@ body {
     margin: 50px;
 }
 
+header {
+    background: #f0f0f0;
+    color: black;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+header .logo h1 {
+    margin: 0;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+    text-align: center;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    color: black;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+nav ul li a:hover {
+    color: #df4adf;
+}
+
 #payment-form {
     max-width: 400px;
     margin: auto;
@@ -14,7 +50,7 @@ body {
 }
 
 button {
-    background-color: #6772e5;
+    background: #df4adf;
     color: white;
     border: none;
     padding: 10px;

@@ -41,6 +41,10 @@ nav ul li a {
     font-size: 18px;
 }
 
+nav ul li a:hover {
+    color: #df4adf;
+}
+
 #logout-btn {
     background: #df4adf;
     color: white;

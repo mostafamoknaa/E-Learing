@@ -15,6 +15,7 @@ import {
     updateDoc,
     deleteDoc,
     serverTimestamp,
+    logout
 } from "./module.js";
 
 const courseList = document.querySelector(".course-list");
@@ -48,3 +49,4 @@ async function fetchCourses() {
 }
 
 document.addEventListener("DOMContentLoaded", fetchCourses);
+document.getElementById("logout-btn").addEventListener("click", logout);

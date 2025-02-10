@@ -12,7 +12,8 @@ import {
     doc,
     updateDoc,
     deleteDoc,
-    serverTimestamp
+    serverTimestamp,
+    logout
 } from "./module.js";
 
 let currentUser = null;
@@ -294,3 +295,6 @@ function getWishlist() {
 }
 
 document.addEventListener("DOMContentLoaded", loadCourses);
+
+
+document.getElementById("logout-btn").addEventListener("click", logout);

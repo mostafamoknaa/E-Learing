@@ -12,7 +12,8 @@ import {
     doc,
     updateDoc,
     deleteDoc,
-    serverTimestamp
+    serverTimestamp,
+    logout
 } from "./module.js";
 
 let currentUser = null;
@@ -202,3 +203,5 @@ async function loadCourseContent() {
         alert("An error occurred while loading the course content.");
     });
 }
+
+document.getElementById("logout-btn").addEventListener("click", logout);

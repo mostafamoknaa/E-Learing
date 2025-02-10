@@ -12,7 +12,8 @@ import {
     doc,
     updateDoc,
     deleteDoc,
-    serverTimestamp
+    serverTimestamp,
+    logout
 } from "./module.js";
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -89,3 +90,4 @@ function generateStars(rating) {
 
 
 fetchFeedback();
+document.getElementById("logout-btn").addEventListener("click", logout);
