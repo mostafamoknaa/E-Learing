@@ -204,3 +204,10 @@ footer {
     border-radius: 5px;
     transition: background 0.3s ease-in-out;
 }
+
+.img-fluid {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}

@@ -12,7 +12,6 @@ import {
     doc,
     updateDoc,
     deleteDoc,
-    logout
 } from "./module.js";
 
 
@@ -40,48 +39,52 @@ async function loadWishlist() {
     const wishlistContainer = document.getElementById("courses-container");
     if (!wishlistContainer) return;
 
-    if (wishlist.length === 0) {
-        wishlistContainer.innerHTML = "<p>No items in wishlist.</p>";
-        return;
-    }
-
     const coursesRef = collection(db, "courses");
     const querySnapshot = await getDocs(coursesRef);
 
-    let userEnrollments = {};
-    if (currentUser) {
-        const enrollmentRef = collection(db, "enrollment");
-        const q = query(enrollmentRef, where("userId", "==", currentUser.uid));
-        const enrollmentSnapshot = await getDocs(q);
 
-        userEnrollments = Object.fromEntries(
-            enrollmentSnapshot.docs.map(doc => [doc.data().courseId, {
-                status: doc.data().status,
-                id: doc.id
-            }])
-        );
-    }
+    for (const doc of querySnapshot.docs) {
+        const course = doc.data();
+        if (wishlist.some(item => item.id === doc.id)) {
+            let enrollmentStatus = "not enrolled";
+            let enrollmentId = null;
 
-    wishlistContainer.innerHTML = wishlist.map(item => {
-        const enrollment = userEnrollments[item.id] || { status: "not enrolled", id: null };
-        const buttonText = enrollment.status === "approved" ? "Open Course" :
-            enrollment.status === "pending" ? "Pending Approval" :
-            "Enroll";
-        const disabled = enrollment.status === "pending" ? "disabled" : "";
+            if (currentUser) {
+                const enrollmentRef = collection(db, "enrollment");
+                const q = query(enrollmentRef, where("courseId", "==", doc.id), where("userId", "==", currentUser.uid));
+                const enrollmentSnapshot = await getDocs(q);
 
-        return `
+                if (!enrollmentSnapshot.empty) {
+                    const enrollmentData = enrollmentSnapshot.docs[0].data();
+                    enrollmentStatus = enrollmentData.status;
+                    enrollmentId = enrollmentSnapshot.docs[0].id;
+                }
+            }
+
+            const buttonText = enrollmentStatus === "approved" ? "Open Course" :
+                enrollmentStatus === "pending" ? "Pending Approval" : "Enroll";
+
+
+            wishlistContainer.innerHTML = wishlist.length === 0 ?
+                "<p>No items in wishlist.</p>" :
+                wishlist.map(item => `
             <div class="wishlist-item">
                 <img src="${item.image}" width="100">
                 <p>${item.title} - $${item.price}</p>
                 <button class="wishlist-btn" data-id="${item.id}">Remove</button>
-                <button class="enroll-btn" data-id="${item.id}" data-enrollment-id="${enrollment.id}" ${disabled}>
+                <button class="enroll-btn" 
+                    data-id="${doc.id}" 
+                    data-enrollment-id="${enrollmentId}" 
+                    ${enrollmentStatus === "pending" ? "disabled" : ""}>
                     ${buttonText}
                 </button>
-            </div>`;
-    }).join("");
+            </div>
+        `).join("");
 
-    attachEventListeners();
-    watchEnrollmentStatus();
+            attachEventListeners();
+            watchEnrollmentStatus();
+        }
+    }
 }
 
 
@@ -142,7 +145,7 @@ async function handleEnrollment(event) {
         if (!enrollmentSnapshot.empty) {
             const enrollmentData = enrollmentSnapshot.docs[0].data();
             if (enrollmentData.status === "approved") {
-                window.location.href = `videos.html?courseId=${courseId}`;
+                window.location.href = `vidoes.html?courseId=${courseId}`;
             } else {
                 button.textContent = "Pending Approval";
                 button.disabled = true;
@@ -168,6 +171,9 @@ async function handleEnrollment(event) {
 
 
 
+
+
+
 window.viewWishlist = function() {
     const wishlist = getWishlist();
     const wishlistItems = document.getElementById("wishlist-items");
@@ -187,17 +193,30 @@ window.viewWishlist = function() {
         `).join("");
 
     attachEventListeners();
-    wishlistModal.style.display = "block";
+    updateWishlistCount();
 };
 
 
+window.closeWishlistModal = function() {
+    const wishlistModal = document.getElementById("wishlist-modal");
+    if (wishlistModal) wishlistModal.style.display = "none";
+};
 
 
 window.removeFromWishlist = function(id) {
     let wishlist = getWishlist().filter(item => item.id !== id);
     saveWishlist(wishlist);
+
+
     loadWishlist();
     viewWishlist();
+    updateWishlistCount();
 };
 
-document.getElementById("logout-btn").addEventListener("click", logout);
+function updateWishlistCount() {
+    const count = getWishlist().length;
+    const wishlistCounter = document.getElementById("wishlist-count");
+    if (wishlistCounter) {
+        wishlistCounter.textContent = count;
+    }
+}
