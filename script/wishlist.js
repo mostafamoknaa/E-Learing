@@ -187,12 +187,13 @@ window.viewWishlist = function() {
         `).join("");
 
     attachEventListeners();
+    wishlistModal.style.display = "block";
 };
 
 
 
 
-window.removeFromWishlist = function(id) {
+function removeFromWishlist(id) {
     let wishlist = getWishlist().filter(item => item.id !== id);
     saveWishlist(wishlist);
     loadWishlist();
