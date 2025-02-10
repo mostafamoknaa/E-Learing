@@ -15,8 +15,13 @@
 </head>
 
 <body>
-    <div id="admin-dashboard">
 
+    <div id="admin-dashboard">
+        <div>
+            <label for="search">Search:</label>
+            <input type="text" id="search-input" placeholder="Search...">
+            <button onclick="searchCourses()" id="search-button" class="search-btn">Search</button>
+        </div>
         <h2>Manage Courses</h2>
         <table id="course-table">
             <thead>

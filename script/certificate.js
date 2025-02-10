@@ -12,7 +12,8 @@ import {
     doc,
     updateDoc,
     deleteDoc,
-    serverTimestamp
+    serverTimestamp,
+    logout
 } from "./module.js";
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -63,3 +64,5 @@ async function Course(courseId) {
         console.error("Error fetching course details:", error);
     }
 }
+
+document.getElementById("logout-btn").addEventListener("click", logout);

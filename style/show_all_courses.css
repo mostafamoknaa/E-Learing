@@ -40,6 +40,10 @@ nav ul li a {
     font-size: 18px;
 }
 
+nav ul li a:hover {
+    color: #df4adf;
+}
+
 
 /* Course Cards */
 
@@ -199,4 +203,11 @@ footer {
     margin-bottom: 15px;
     border-radius: 5px;
     transition: background 0.3s ease-in-out;
+}
+
+.img-fluid {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
 }

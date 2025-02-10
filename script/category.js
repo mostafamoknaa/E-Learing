@@ -17,11 +17,11 @@ import {
 
 
 
-const categoryForm = document.getElementById("category-form");
-const categoryNameInput = document.getElementById("category-name");
-const categoryList = document.getElementById("category-list");
+
+
 
 async function fetchCategories() {
+    const categoryList = document.getElementById("category-list");
     categoryList.innerHTML = "";
     try {
         const snapshot = await getDocs(collection(db, "categories"));
@@ -70,11 +70,12 @@ async function fetchCategories() {
 }
 
 
+const categoryForm = document.getElementById("category-form");
 categoryForm.addEventListener("submit", async(e) => {
     e.preventDefault();
-
+    const categoryNameInput = document.getElementById("category-name");
     const name = categoryNameInput.value.trim();
-    const regex = /^[a-zA-Z\s]+[^\s]$/;
+    const regex = /^[a-zA-Z\s\-]+[^\s]$/;
     if (!name || name.length < 3 || !regex.test(name)) {
         alert("Your Category Name must be at least 3 characters long and contain only alphabets and spaces.");
         return;
@@ -130,13 +131,13 @@ async function deleteCategory(categoryId) {
 
 async function updateCategory(categoryId) {
 
-
+    const categoryNameInput = document.getElementById("category-name");
     //const newName = prompt("Enter the new name for the category:").trim();
 
     categoryNameInput.focus();
     const newName = categoryNameInput.value.trim();
 
-    const regex = /^[a-zA-Z\s]+[^\s]$/;
+    const regex = /^[a-zA-Z\s\-]+[^\s]$/;
     if (!newName || !regex.test(newName)) {
         alert("Category name must be at least 3 characters long and contain only letters and spaces.");
         return;
@@ -169,7 +170,7 @@ async function updateCategory(categoryId) {
             }
         });
 
-
+        categoryNameInput.value = "";
         fetchCategories();
 
     } catch (error) {
@@ -188,7 +189,7 @@ async function getCategoryName(categoryId) {
         if (categorySnap.exists()) {
             return categorySnap.data().name;
         } else {
-            console.warn(`Category ID ${categoryId} not found.`);
+            //console.log(`Category ID ${categoryId} not found.`);
             return "Unknown Category";
         }
     } catch (error) {

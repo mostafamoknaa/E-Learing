@@ -5,6 +5,57 @@ body {
     padding: 0;
 }
 
+header {
+    background: #f0f0f0;
+    color: black;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+header .logo h1 {
+    margin: 0;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+    text-align: center;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    color: black;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+nav ul li a:hover {
+    color: #df4adf;
+}
+
+#logout-btn {
+    background: #df4adf;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+#logout-btn:hover {
+    background: #c038c0;
+    transform: scale(1.05);
+}
+
 .container {
     max-width: 800px;
     margin: 0 auto;

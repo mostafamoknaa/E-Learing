@@ -29,6 +29,11 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+
+function logout() {
+    window.location.href = "form.html";
+    localStorage.removeItem("userToken");
+}
 export {
     db,
     auth,
@@ -44,4 +49,5 @@ export {
     updateDoc,
     deleteDoc,
     serverTimestamp,
+    logout
 };

@@ -17,10 +17,24 @@ import {
 
 
 
-
-
-const statusFilter = document.getElementById("status-filter");
+const searchButton = document.getElementById("search-button");
 const searchInput = document.getElementById("search-input");
+
+function searchCourses() {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const rows = document.querySelectorAll("#course-table tbody tr");
+
+    rows.forEach((row) => {
+        const courseTitle = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+        row.style.display = courseTitle.includes(searchTerm) ? "" : "none";
+    });
+}
+
+searchButton.addEventListener("click", searchCourses);
+searchInput.addEventListener("input", searchCourses);
+
+
+
 
 
 async function fetchCourses() {
