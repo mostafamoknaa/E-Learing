@@ -17,10 +17,24 @@ import {
 
 
 
-
-
-const statusFilter = document.getElementById("status-filter");
+const searchButton = document.getElementById("search-button");
 const searchInput = document.getElementById("search-input");
+
+function searchCourses() {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const rows = document.querySelectorAll("#course-table tbody tr");
+
+    rows.forEach((row) => {
+        const courseTitle = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+        row.style.display = courseTitle.includes(searchTerm) ? "" : "none";
+    });
+}
+
+searchButton.addEventListener("click", searchCourses);
+searchInput.addEventListener("input", searchCourses);
+
+
+
 
 
 async function fetchCourses() {
@@ -99,6 +113,7 @@ function attachEditListeners() {
                 document.getElementById("course-description").value = course.description;
                 document.getElementById("course-price").value = course.price;
                 document.getElementById("course-duration").value = course.duration;
+                document.getElementById("course-video").value = course.videoUrl;
             }
         });
     });
@@ -160,6 +175,7 @@ document.getElementById("save-update").addEventListener("click", async() => {
         description: document.getElementById("course-description").value,
         price: parseFloat(document.getElementById("course-price").value),
         duration: parseInt(document.getElementById("course-duration").value),
+        videoUrl: document.getElementById("course-video").value,
     };
 
     try {

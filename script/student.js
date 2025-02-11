@@ -1,18 +1,7 @@
 import {
     db,
-    auth,
-    onAuthStateChanged,
-    onSnapshot,
-    addDoc,
     getDocs,
-    query,
-    where,
     collection,
-    getDoc,
-    doc,
-    updateDoc,
-    deleteDoc,
-    serverTimestamp
 } from "./module.js";
 
 const studentTableBody = document.getElementById("studentTableBody");
@@ -32,89 +21,97 @@ async function getCourseNames() {
     return courseNames;
 }
 
-async function getStudentNames() {
-    const studentNames = {};
+
+async function getStudentsData() {
+    const students = {};
     try {
         const querySnapshot = await getDocs(collection(db, "student"));
         querySnapshot.forEach((doc) => {
             const student = doc.data();
-            studentNames[doc.id] = student.name.trim() || "Unknown Student";
+            if (student.email === "mostafamokna78@gmail.com") {
+                return;
+            }
+            students[doc.id] = {
+
+                name: student.name.trim() || "Unknown Student",
+                email: student.email || "Unknown Email",
+                completedCourses: [],
+                enrolledCourses: [],
+
+            };
         });
     } catch (error) {
-        console.error("Error fetching student names:", error);
+        console.error("Error fetching student data:", error);
     }
-    return studentNames;
+    return students;
 }
 
 
 async function loadStudents() {
     try {
-
-        const [courseNames, studentNames] = await Promise.all([
+        const [courseNames, students] = await Promise.all([
             getCourseNames(),
-            getStudentNames()
+            getStudentsData()
         ]);
+
+        const enrollQuerySnapshot = await getDocs(collection(db, "enrollment"));
+        enrollQuerySnapshot.forEach((doc) => {
+            const enroll = doc.data();
+            const studentId = enroll.userId;
+            const courseId = enroll.courseId;
+
+            if (students[studentId]) {
+                students[studentId].enrolledCourses.push(courseNames[courseId] || "Unknown Course");
+            }
+        });
 
 
         const querySnapshot = await getDocs(collection(db, "coursecompleted"));
-        studentTableBody.innerHTML = "";
-
-        let index = 1;
-        const studentCourses = {};
-
-
         querySnapshot.forEach((doc) => {
             const record = doc.data();
             const studentId = record.userId;
             const courseId = record.courseId;
             const isFinished = record.iscompleted;
 
-            if (!studentCourses[studentId]) {
-                studentCourses[studentId] = {
-                    name: studentNames[studentId] || "Unknown Student",
-                    completedCourses: [],
-                    uncompletedCourses: []
-                };
-            }
-
-            const courseName = courseNames[courseId] || "Unknown Course";
-            if (isFinished) {
-                studentCourses[studentId].uncompletedCourses.push(courseName);
-            } else {
-
-                studentCourses[studentId].completedCourses.push(courseName);
+            if (students[studentId] && !isFinished) {
+                students[studentId].completedCourses.push(courseNames[courseId] || "Unknown Course");
             }
         });
 
 
-        for (const studentId in studentCourses) {
-            const { name, completedCourses, uncompletedCourses } = studentCourses[studentId];
-            const rowSpanCount = Math.max(completedCourses.length, uncompletedCourses.length, 1);
+        studentTableBody.innerHTML = "";
+        let index = 1;
 
-            for (let i = 0; i < rowSpanCount; i++) {
+        for (const studentId in students) {
+            const { name, email, completedCourses, enrolledCourses } = students[studentId];
+
+
+            const rowCount = Math.max(completedCourses.length, enrolledCourses.length, 1);
+
+            for (let i = 0; i < rowCount; i++) {
                 const row = document.createElement("tr");
 
                 if (i === 0) {
                     row.innerHTML = `
-                        <td rowspan="${rowSpanCount}">${index++}</td>
-                        <td rowspan="${rowSpanCount}">${name}</td>
-                        <td>${completedCourses[i] || "No Completed Courses"}</td>
-                        <td>${uncompletedCourses[i] || "No Uncompleted Courses"}</td>
+                        <td rowspan="${rowCount}">${index++}</td>
+                        <td rowspan="${rowCount}">${name}</td>
+                        <td rowspan="${rowCount}">${email}</td>
+                        <td>${completedCourses[i] || "No Completed courses"}</td>
+                        <td>${enrolledCourses[i] || "No Enrolled courses"}</td>
                     `;
                 } else {
                     row.innerHTML = `
                         <td>${completedCourses[i] || ""}</td>
-                        <td>${uncompletedCourses[i] || ""}</td>
+                        <td>${enrolledCourses[i] || ""}</td>
                     `;
                 }
 
                 studentTableBody.appendChild(row);
             }
-        }
+        };
     } catch (error) {
         console.error("Error fetching students:", error);
     }
 }
-
 
 window.addEventListener("DOMContentLoaded", loadStudents);

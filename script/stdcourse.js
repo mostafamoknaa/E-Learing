@@ -12,7 +12,8 @@ import {
     doc,
     updateDoc,
     deleteDoc,
-    serverTimestamp
+    serverTimestamp,
+    logout
 } from "./module.js";
 
 let currentUser = null;
@@ -23,6 +24,7 @@ onAuthStateChanged(auth, (user) => {
         loadCourses();
     }
 });
+
 
 
 const statusFilter = document.getElementById("status-filter");
@@ -87,9 +89,13 @@ async function loadCourses() {
                 searchTerm &&
                 !course.title.toLowerCase().includes(searchTerm) &&
                 !course.instructor.toLowerCase().includes(searchTerm)
+
             ) {
-                return "No Courses Found Matching Your Search ";
+                return null;
             }
+
+
+
             let enrollmentStatus = "not enrolled";
             let enrollmentId = null;
 
@@ -129,7 +135,7 @@ async function loadCourses() {
             return `
                 <div class="col-md-4">
                     <div class="content-box">
-                        <img src="${course.image || ''}" alt="${course.title}" onerror="this.src='default-course-image.jpg'">
+                        <img src="${course.image || ''}" alt="${course.title}" class="img-fluid">
                         <div class="content-info">
                             <h5>${course.title}</h5>
                             <p><strong>Instructor:</strong> ${course.instructor}</p>
@@ -157,6 +163,7 @@ async function loadCourses() {
                 </div>
             `;
         });
+
 
         const courseElements = await Promise.all(coursePromises);
         coursesContainer.innerHTML = courseElements.join('');
@@ -294,3 +301,6 @@ function getWishlist() {
 }
 
 document.addEventListener("DOMContentLoaded", loadCourses);
+
+
+document.getElementById("logout-btn").addEventListener("click", logout);

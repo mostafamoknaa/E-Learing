@@ -12,7 +12,8 @@ import {
     doc,
     updateDoc,
     deleteDoc,
-    serverTimestamp
+    serverTimestamp,
+    logout
 } from "./module.js";
 
 let currentUser = null;
@@ -38,7 +39,7 @@ async function loadCourseContent() {
 
     const courseRef = doc(db, "courses", courseId);
 
-    onSnapshot(courseRef, (docSnap) => {
+    onSnapshot(courseRef, async(docSnap) => {
         if (docSnap.exists()) {
             const course = docSnap.data();
             document.getElementById("courseTitle").innerText = course.title;
@@ -47,6 +48,10 @@ async function loadCourseContent() {
             document.getElementById("courseInstructor").innerText = course.instructor;
             document.getElementById("coursePrice").innerText = course.price;
             document.getElementById("courseDescription").innerText = course.description;
+<<<<<<< HEAD
+=======
+
+>>>>>>> ca829bce79b42ea9debeafc386b891460cd9cc74
             if (course.videoUrl) {
                 let videoUrl = course.videoUrl;
                 if (videoUrl.includes("watch?v=")) {
@@ -57,15 +62,17 @@ async function loadCourseContent() {
                 `;
             }
 
+
             let myDiv = document.getElementById("myDiv");
+            myDiv.innerHTML = "";
+
             let checkbox = document.createElement('input');
             checkbox.type = "checkbox";
-            checkbox.name = "courseCompleted";
             checkbox.id = "completionCheckbox";
 
             let label = document.createElement('label');
             label.htmlFor = "completionCheckbox";
-            label.appendChild(document.createTextNode('Are you completed the course?'));
+            label.textContent = 'Are you completed the course?';
 
             myDiv.appendChild(checkbox);
             myDiv.appendChild(label);
@@ -94,13 +101,10 @@ async function loadCourseContent() {
                             userId: currentUser.uid,
                             isCompleted: this.checked
                         });
-                        console.log("Course completion recorded!");
                     }
-
 
                     if (this.checked) {
                         this.disabled = true;
-
                         label.textContent = 'Course Completed!';
                     }
 
@@ -108,7 +112,6 @@ async function loadCourseContent() {
                     console.error("Error saving course completion:", error);
                 }
             });
-
 
             async function loadCheckboxState() {
                 if (!currentUser) return;
@@ -125,10 +128,7 @@ async function loadCourseContent() {
                     if (!querySnapshot.empty) {
                         const docData = querySnapshot.docs[0].data();
                         const isCompleted = docData.isCompleted;
-
-
                         checkbox.checked = isCompleted;
-
 
                         if (isCompleted) {
                             checkbox.disabled = true;
@@ -141,8 +141,7 @@ async function loadCourseContent() {
             }
             loadCheckboxState();
 
-
-
+            // Fix: Feedback system now properly resets stars
             const feedbackText = document.getElementById("feedbackText");
             const starRating = document.getElementById("starRating");
             const stars = starRating.querySelectorAll(".star");
@@ -150,11 +149,11 @@ async function loadCourseContent() {
 
             let selectedRating = 0;
 
-
             stars.forEach(star => {
                 star.addEventListener("click", () => {
                     selectedRating = parseInt(star.getAttribute("data-value"));
                     stars.forEach(s => {
+<<<<<<< HEAD
                         //select the real number of star that student click on it
                         if (parseInt(s.getAttribute("data-value")) <= selectedRating) {
                             // it modify in css to change the color of the star
@@ -163,10 +162,12 @@ async function loadCourseContent() {
                             //remove the stars not selected
                             s.classList.remove("selected");
                         }
+=======
+                        s.classList.toggle("selected", parseInt(s.getAttribute("data-value")) <= selectedRating);
+>>>>>>> ca829bce79b42ea9debeafc386b891460cd9cc74
                     });
                 });
             });
-
 
             submitFeedbackButton.addEventListener("click", async() => {
                 if (!currentUser) {
@@ -181,7 +182,6 @@ async function loadCourseContent() {
                 }
 
                 try {
-
                     await addDoc(collection(db, "feedback"), {
                         userId: currentUser.uid,
                         courseId: courseId,
@@ -200,23 +200,22 @@ async function loadCourseContent() {
                 }
             });
 
-            let button = document.getElementById("goBackButton");
-            button.textContent = "GO BACK";
-            button.addEventListener("click", function() {
+            document.getElementById("goBackButton").addEventListener("click", function() {
                 window.location.href = "show_all_courses.html";
+            });
+
+            document.getElementById("showFeedback").addEventListener("click", function() {
+                window.location.href = `feedback.html?courseId=${courseId}`;
             });
 
         } else {
             alert("Course not found!");
             window.location.href = "show_all_courses.html";
         }
-
-        document.getElementById("showFeedback").addEventListener("click", function() {
-            window.location.href = `feedback.html?courseId=${courseId}`;
-        });
-
     }, (error) => {
         console.error("Error loading course content:", error);
         alert("An error occurred while loading the course content.");
     });
 }
+
+document.getElementById("logout-btn").addEventListener("click", logout);

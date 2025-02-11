@@ -12,7 +12,8 @@ import {
     doc,
     updateDoc,
     deleteDoc,
-    serverTimestamp
+    serverTimestamp,
+    logout
 } from "./module.js";
 
 
@@ -111,3 +112,5 @@ onAuthStateChanged(auth, (user) => {
         gridContainer.innerHTML = "<p>Please log in to see your course history.</p>";
     }
 });
+
+document.getElementById("logout-btn").addEventListener("click", logout);
