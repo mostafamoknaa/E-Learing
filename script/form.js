@@ -169,7 +169,8 @@ document.getElementById('form_in').addEventListener('submit', async function(eve
 
                 // //window.location.href = "index.html";
                 // window.location.replace("index.html");
-                if (userCredential.user.email === "mostafamokna78@gmail.com") {
+                //
+                if (userCredential.user.email === "mostafamokna78@gmail.com" ||userCredential.user.email ==="ahmeed@gmail.com" ) {
                     window.location.href = "admin.html";
                 } else {
                     window.location.href = "home.html";

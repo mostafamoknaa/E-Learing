@@ -47,22 +47,14 @@ async function loadCourseContent() {
             document.getElementById("courseInstructor").innerText = course.instructor;
             document.getElementById("coursePrice").innerText = course.price;
             document.getElementById("courseDescription").innerText = course.description;
-
-            const videoContainer = document.getElementById("videoContainer");
-
-            if (!course.content || course.content.length === 0) {
-                videoContainer.innerHTML = "<p class='no-content'>No videos available for this course.</p>";
-            } else {
-                videoContainer.innerHTML = "";
-                course.content.forEach(videoUrl => {
-                    if (videoUrl.trim()) {
-                        const iframe = document.createElement("iframe");
-                        iframe.src = videoUrl.trim();
-                        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                        iframe.allowFullscreen = true;
-                        videoContainer.appendChild(iframe);
-                    }
-                });
+            if (course.videoUrl) {
+                let videoUrl = course.videoUrl;
+                if (videoUrl.includes("watch?v=")) {
+                    videoUrl = videoUrl.replace("watch?v=", "embed/");
+                }
+                document.getElementById("videoContainer").innerHTML = `
+                    <iframe src="${videoUrl}" title="Course Video" allowfullscreen></iframe>
+                `;
             }
 
             let myDiv = document.getElementById("myDiv");
@@ -163,9 +155,12 @@ async function loadCourseContent() {
                 star.addEventListener("click", () => {
                     selectedRating = parseInt(star.getAttribute("data-value"));
                     stars.forEach(s => {
+                        //select the real number of star that student click on it
                         if (parseInt(s.getAttribute("data-value")) <= selectedRating) {
+                            // it modify in css to change the color of the star
                             s.classList.add("selected");
                         } else {
+                            //remove the stars not selected
                             s.classList.remove("selected");
                         }
                     });
